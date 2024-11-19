@@ -33,6 +33,7 @@ yarn dev
   ```
   to package.json to solve an error with yarn install
   # download node18-alpine first to the docker
+  ```docker pull node:18-alpine```
 
   2) run 
   docker build -t my-react-app .
@@ -40,3 +41,13 @@ yarn dev
   3) startt container
   docker run -p 3001:3001 my-react-app
 
+## storybook installation
+1)    npx sb init
+2)    yarn storybook
+
+## created docker-compose.yml
+1)set up the file
+2)   docker-compose up --build
+3) can run using
+ ``` docker-compose up ```
+ ## its crucial to download docker pull node:18-alpine first and then run docker compost up --build
