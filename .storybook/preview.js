@@ -1,3 +1,4 @@
+import '../src/tailwind.css'; // Adjust the path to your Tailwind CSS file
 /** @type { import('@storybook/react').Preview } */
 const preview = {
   parameters: {

@@ -51,3 +51,17 @@ yarn dev
 3) can run using
  ``` docker-compose up ```
  ## its crucial to download docker pull node:18-alpine first and then run docker compost up --build
+
+
+<!-- # added lint, prepare scripts to package.json -->
+# created folder structure
+
+#added yarn add @tanstack/react-query
+
+#set up quiery client in main.jsx
+
+# added ``` react-hook-form yup @hookform/resolvers ``` for form handling
+@storybook/addon-postcss
+
+# add this to fix tailwind in stories
+import '../src/index.css'; // Adjust the path to your Tailwind CSS file 
