@@ -65,3 +65,11 @@ yarn dev
 
 # add this to fix tailwind in stories
 import '../src/index.css'; // Adjust the path to your Tailwind CSS file 
+
+#downloaded 
+reactstrap
+for material pro react components
+-didnt use much
+# installed 
+yarn add @mui/material @emotion/react @emotion/styled
+yarn add @mui/icons-material
