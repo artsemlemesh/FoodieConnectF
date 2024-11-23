@@ -73,3 +73,10 @@ for material pro react components
 # installed 
 yarn add @mui/material @emotion/react @emotion/styled
 yarn add @mui/icons-material
+
+
+
+# created login/registration in backend
+
+# working on redux for frontend registration/login
+

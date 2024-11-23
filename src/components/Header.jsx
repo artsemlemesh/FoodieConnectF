@@ -1,20 +1,25 @@
 
 const Header = () => {
   return (
-    <header className="flex justify-between items-center p-4 bg-blue-500 text-white">
-      <h1 className="text-xl font-bold">FoodieConnect</h1>
-      <nav className="space-x-4">
-        <a href="/" className="hover:underline">
-          Home
-        </a>
-        <a href="/restaurants" className="hover:underline">
-          Restaurants
-        </a>
-        <a href="/orders" className="hover:underline">
-          Orders
-        </a>
-      </nav>
-    </header>
+    <header className="bg-blue-600 text-white p-4">
+        <div className="container mx-auto flex justify-between items-center">
+          <h1 className="text-xl font-bold">FoodieConnect</h1>
+          <nav className="space-x-4">
+            <a href="/" className="hover:underline">
+              Home
+            </a>
+            <a href="/about" className="hover:underline">
+              About
+            </a>
+            <a href="/contact" className="hover:underline">
+              Contact
+            </a>
+            <a href="/order-food" className="hover:underline">
+              Order Food
+            </a>
+          </nav>
+        </div>
+      </header>
   );
 };
 
