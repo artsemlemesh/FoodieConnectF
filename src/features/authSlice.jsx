@@ -1,9 +1,8 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-const csrftoken = document.cookie
-  .split('; ')
-  .find((row) => row.startsWith('csrftoken='))
-  .split('=')[1];
+const apiUrl = import.meta.env.VITE_APP_API_URL
+
+
 
 const initialState = {
   user: JSON.parse(localStorage.getItem('user')) || null,
@@ -14,12 +13,11 @@ const initialState = {
 export const registerUser = createAsyncThunk(
   'auth/register',
   async ({ username, email, password1, password2 }) => {
-    const response = await fetch(`http://127.0.0.1:8000/users/register/`, {
+    const response = await fetch(`${apiUrl}/users/register/`, {
       method: 'POST',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        // 'X-CSRFToken': csrftoken,  // Include the CSRF token
       },
       body: JSON.stringify({ username, email, password1, password2 }), // Send all required fields
     });
@@ -30,8 +28,7 @@ export const registerUser = createAsyncThunk(
     }
 
     const data = await response.json();
-    console.log(data, 'DATA');
-    console.log('RegistrationREDUCER');
+ 
     localStorage.setItem('user', JSON.stringify(data));
     return data;
   }
@@ -40,31 +37,28 @@ export const registerUser = createAsyncThunk(
 export const loginUser = createAsyncThunk(
   'auth/login',
   async ({ username, password1 }) => {
-    const response = await fetch(`http://127.0.0.1:8000/users/login/`, {
+    const response = await fetch(`${apiUrl}/users/login/`, {
       method: 'POST',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        // 'X-CSRFToken': csrftoken,  // Include the CSRF token
       },
       body: JSON.stringify({ username, password: password1 }),
     });
-    console.log(response, 'RESPONSE');
 
     if (!response.ok) {
       throw new Error('Login Failed');
     }
 
     const data = await response.json();
-    console.log(data, 'DATA');
-    console.log('LOGINREDUCER');
+    
     localStorage.setItem('user', JSON.stringify(data));
     return data;
   }
 );
 
 export const logoutUser = createAsyncThunk('auth/logout', async () => {
-  const response = await fetch(`http://127.0.0.1:8000/users/logout/`, {
+  const response = await fetch(`${apiUrl}/users/logout/`, {
     method: 'POST',
     credentials: 'include',
   });
@@ -80,7 +74,7 @@ export const fetchUserProfile = createAsyncThunk(
   'auth/fetchUserProfile',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await get(`http://127.0.0.1:8000/users/profile`, {
+      const response = await get(`${apiUrl}/users/profile`, {
         withCredentials: true, // Include credentials for authentication
       });
       return response.data;

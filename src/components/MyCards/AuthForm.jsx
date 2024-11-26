@@ -2,19 +2,18 @@ import React, { useState } from 'react';
 import { TextField, Button, Typography, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../features/authSlice';
+import { useAppContext } from '../../context/GlobalContext';
 
 const AuthForm = ({ type, onSubmit }) => {
+  const { authStatus, error, user } = useAppContext();
+
   const dispatch = useDispatch();
-  const authStatus = useSelector((state) => state.auth.status);
-  const error = useSelector((state) => state.auth.error);
-  const user = useSelector((state) => state.auth.user);
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState(''); // New state for email
 
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
-  // const [isLogin, setIsLogin] = useState(true)
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevent default form submission
@@ -30,6 +29,14 @@ const AuthForm = ({ type, onSubmit }) => {
 
   const handleLogout = async () => {
     dispatch(logoutUser());
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setUsername('');
+    setEmail('');
+    setPassword1('');
+    setPassword2('');
   };
 
   return (
@@ -38,16 +45,15 @@ const AuthForm = ({ type, onSubmit }) => {
       {user ? (
         <Box className="flex flex-col space-y-4 p-6 rounded-lg shadow-lg border max-w-md mx-auto">
           <Typography variant="h5" className="font-bold text-center">
-            Welcome, {user.username} {/* Display the username */}
+            Welcome, {user.username}
           </Typography>
           <img
-            src={user.photo || 'corgi.jpg'} // Use user's photo or a default one
+            src={user.photo || 'corgi.jpg'}
             alt="User"
-            className="w-24 h-24 rounded-full mx-auto" // Adjust size and styling as needed
+            className="w-24 h-24 rounded-full mx-auto"
           />
           <Button
             onClick={handleLogout}
-            // className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
             variant="contained"
             color="secondary"
             fullWidth
@@ -70,12 +76,12 @@ const AuthForm = ({ type, onSubmit }) => {
           />
           {type === 'register' && (
             <TextField
-            label="Email"
-            variant="outlined"
-            fullWidth
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+              label="Email"
+              variant="outlined"
+              fullWidth
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           )}
           <TextField
             label="Password"
@@ -87,15 +93,14 @@ const AuthForm = ({ type, onSubmit }) => {
           />
           {type === 'register' && (
             <TextField
-            label="Confirm the Password"
-            type="password"
-            variant="outlined"
-            fullWidth
-            value={password2}
-            onChange={(e) => setPassword2(e.target.value)}
-          />
+              label="Confirm the Password"
+              type="password"
+              variant="outlined"
+              fullWidth
+              value={password2}
+              onChange={(e) => setPassword2(e.target.value)}
+            />
           )}
-          
           {error && <Typography color="error">{error}</Typography>}{' '}
           {/* Display error message */}
           <Button
