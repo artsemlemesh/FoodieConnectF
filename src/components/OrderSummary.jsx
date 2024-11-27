@@ -1,10 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { fetchCart, removeFromCart } from '../features/cartSlice';
+import { useDispatch } from 'react-redux';
 
 const OrderSummary = ({ items, total }) => {
+
+  // const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   dispatch(fetchCart())
+  // }, [dispatch])
+
+  // const handleRemove = (productId) => {
+  //   dispatch(removeFromCart(productId))
+  // }
+
+
+
+
+
+
+
   if (!Array.isArray(items) || items.length === 0) {
     return <p className="text-gray-500">No items in the order.</p>; //prevents throwing an error if items is not an array or is empty
   }
+
+
   return (
     <div className="border p-4 rounded-lg shadow-lg">
       <h3 className="text-lg font-bold">Order Summary</h3>

@@ -1,8 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import Cookies from 'js-cookie';
 
 const apiUrl = import.meta.env.VITE_APP_API_URL
-
-
 
 const initialState = {
   user: JSON.parse(localStorage.getItem('user')) || null,
@@ -51,7 +50,7 @@ export const loginUser = createAsyncThunk(
     }
 
     const data = await response.json();
-    
+    console.log('Login response:', data);
     localStorage.setItem('user', JSON.stringify(data));
     return data;
   }

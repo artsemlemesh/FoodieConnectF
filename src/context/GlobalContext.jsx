@@ -11,30 +11,31 @@ export const AppProvider = ({ children }) => {
   const error = useSelector((state) => state.auth.error);
   const user = useSelector((state) => state.auth.user);
 
+  const cart = useSelector((state) => state.cart.items);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [isLogin, setIsLogin] = useState(true);
 
-  const handleLogin = (data) => {
+  const handleLogin = async (data) => {
     const { username, password1 } = data; //extract name and pass
-    // Dispatch the login action with the provided credentials
-    dispatch(loginUser({ username, password1 }));
-    console.log('Login action dispatched with:', { username, password1 });
-    console.log('Current state:', store.getState());
+    try {
+      await dispatch(loginUser({ username, password1 })).unwrap();
+      closeModal();
+    } catch (err) {
+      console.error('Login failed:', err);
+    }
   };
 
-  const handleRegister = (data) => {
+  const handleRegister = async (data) => {
     const { username, email, password1, password2 } = data;
 
-    // Dispatch the login action with the provided credentials
-    dispatch(registerUser({ username, email, password1, password2 }));
-    console.log('Register action dispatched with:', {
-      username,
-      email,
-      password1,
-      password2,
-    });
-    console.log('Current state:', store.getState());
+    try {
+      dispatch(registerUser({ username, email, password1, password2 })).unwrap();
+      closeModal()
+    } catch (err) {
+      console.error('Login failed:', err);
+    }
   };
 
   const toggleFormType = () => {
@@ -53,6 +54,7 @@ export const AppProvider = ({ children }) => {
     <AppContext.Provider
       value={{
         user,
+        cart,
         error,
         authStatus,
         isLogin,

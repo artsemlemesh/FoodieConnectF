@@ -24,6 +24,12 @@ const Header = () => {
             <a href="/order-food" className="hover:underline">
               Order Food
             </a>
+            <a href="/checkout" className="hover:underline">
+              Checkout 
+            </a>
+            <a href="/cart" className="hover:underline">
+              Cart
+            </a>
           </nav>
         </div>
       </header>
