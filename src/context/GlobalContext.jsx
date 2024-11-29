@@ -1,7 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, registerUser } from '../features/authSlice';
-import store from '../store/store';
 
 const AppContext = createContext();
 
@@ -31,16 +30,16 @@ export const AppProvider = ({ children }) => {
     const { username, email, password1, password2 } = data;
 
     try {
-      dispatch(registerUser({ username, email, password1, password2 })).unwrap();
-      closeModal()
+      dispatch(
+        registerUser({ username, email, password1, password2 })
+      ).unwrap();
+      closeModal();
     } catch (err) {
       console.error('Login failed:', err);
     }
   };
 
-  const toggleFormType = () => {
-    setIsLogin(!isLogin); // Toggle between login and register
-  };
+  const toggleFormType = () => setIsLogin((prev) => !prev);
 
   const openModal = () => {
     setIsModalOpen(true);
