@@ -1,12 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
-import Cookies from 'js-cookie';
+
+import { axiosClient } from '../utils/axiosClient';
 
 // Base API URL
 const apiUrl = 'http://127.0.0.1:8000';
 
-// Get CSRF token from cookies
-const getCSRFToken = () => Cookies.get('csrftoken');
 
 const initialState = {
   items: [],
@@ -17,110 +15,68 @@ const initialState = {
 // Update a cart item's quantity
 export const updateCartItem = createAsyncThunk(
   'cart/updateCartItem',
-  async ({ productId, quantity }) => {
-    let accessToken = localStorage.getItem('access_token');
-
-    const response = await axios.patch(
-      `${apiUrl}/cart/cart/`,
-      {
-        product_id: productId,
-        quantity,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    console.log('updateCartItem', response.data);
-
-    return response.data; // Return the updated cart item
+  async ({ productId, quantity }, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.patch(
+        '/cart/cart/',
+        {
+          product_id: productId,
+          quantity,
+        }
+      );
+      console.log('updateCartItem', response.data);
+      return response.data; // Return the updated cart item
+    } catch (error) {
+      console.error('Error updating cart item:', error);
+      return rejectWithValue(error.response ? error.response.data : error.message);
+    }
   }
 );
 
-// Fetch cart items
 export const fetchCart = createAsyncThunk(
   'cart/fetchCart',
-  async (_, { dispatch, rejectWithValue }) => {
-    let accessToken = localStorage.getItem('access_token');
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${apiUrl}/cart/cart/`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      console.log('fetchCart', response);
-      console.log('product', response.data);
-
-      if (response.status !== 200) {
-        throw new Error('Failed to fetch cart items');
+      const accessToken = localStorage.getItem('access_token');
+      if (!accessToken) {
+        throw new Error('User is not authenticated');
       }
-      // console.log('fetchCart', response)
-
+      const response = await axiosClient.get(`${apiUrl}/cart/cart/`);
       return await response.data;
     } catch (error) {
       console.error('Error fetching cart:', error);
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.response ? error.response.data : error.message);
     }
   }
 );
 
 // Add item to cart
-export const addToCart = createAsyncThunk('cart/addToCart', async (item) => {
-  const csrfToken = getCSRFToken();
-
-  const response = await fetch(`${apiUrl}/cart/cart/`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrfToken,
-    },
-    body: JSON.stringify(item),
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to add item to cart');
+export const addToCart = createAsyncThunk(
+  'cart/addToCart',
+  async (item, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.post('/cart/cart/', item);
+      return response.data;
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+      return rejectWithValue(error.response ? error.response.data : error.message);
+    }
   }
-
-  return await response.json();
-});
+);
 
 // Remove item from cart
 export const removeFromCart = createAsyncThunk(
   'cart/removeFromCart',
-  async (productId) => {
-    let accessToken = localStorage.getItem('access_token');
+  async (productId, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(
-        `${apiUrl}/cart/cart/`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          },
-          data: {
-            product_id: productId,
-          },
-        }
-      );
+      const response = await axiosClient.delete('/cart/cart/', {
+        data: { product_id: productId },
+      });
       console.log('removeFromCart', response);
-
-      if (response.status !== 200) {
-        throw new Error('Failed to remove item from cart');
-      }
-
       return productId;
     } catch (error) {
       console.error('Error removing item from cart:', error);
-
-      return rejectWithValue(
-        error.response ? error.response.data : error.message
-      ); 
+      return rejectWithValue(error.response ? error.response.data : error.message);
     }
   }
 );
@@ -170,7 +126,6 @@ const cartSlice = createSlice({
       })
       .addCase(updateCartItem.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        // Update the item in the cart
         const index = state.items.findIndex(
           (item) => item.id === action.payload.id
         );

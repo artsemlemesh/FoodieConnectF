@@ -1,18 +1,17 @@
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCart, removeFromCart, updateCartItem } from '../features/cartSlice';
-import { useAppContext } from '../context/GlobalContext';
+import { removeFromCart, updateCartItem } from '../features/cartSlice';
+import useAuthAndFetchCart from '../hooks/useAuthAndFetchCart';
 
 const CartPage = () => {
+  useAuthAndFetchCart();
+
   const dispatch = useDispatch();
-  // const { cart } = useAppContext();
+
   const cart = useSelector((state) => state.cart.items); // Get cart items from Redux store
+  const user = useSelector((state) => state.auth.user);
 
-  console.log('CART', cart)
-  useEffect(() => {
-    dispatch(fetchCart());
-  }, [dispatch]);
-
+  console.log('CART', cart);
+  console.log('User', user);
 
   const handleQuantityChange = (productId, newQuantity) => {
     if (newQuantity > 0) {
@@ -22,14 +21,12 @@ const CartPage = () => {
     }
   };
 
-
-
   const handleRemove = (productId) => {
     dispatch(removeFromCart(productId));
   };
   const cartTotal = cart.reduce((total, item) => total + item.total_price, 0);
 
-  console.log('Cartpage', cart)
+  console.log('Cartpage', cart);
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
