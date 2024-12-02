@@ -8,10 +8,6 @@ const CartPage = () => {
   const dispatch = useDispatch();
 
   const cart = useSelector((state) => state.cart.items); // Get cart items from Redux store
-  const user = useSelector((state) => state.auth.user);
-
-  console.log('CART', cart);
-  console.log('User', user);
 
   const handleQuantityChange = (productId, newQuantity) => {
     if (newQuantity > 0) {
@@ -25,8 +21,6 @@ const CartPage = () => {
     dispatch(removeFromCart(productId));
   };
   const cartTotal = cart.reduce((total, item) => total + item.total_price, 0);
-
-  console.log('Cartpage', cart);
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
