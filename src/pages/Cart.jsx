@@ -1,11 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { removeFromCart, updateCartItem } from '../features/cartSlice';
+import { checkoutCart, removeFromCart, updateCartItem } from '../features/cartSlice';
 import useAuthAndFetchCart from '../hooks/useAuthAndFetchCart';
+import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
   useAuthAndFetchCart();
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const cart = useSelector((state) => state.cart.items); // Get cart items from Redux store
 
@@ -21,6 +23,26 @@ const CartPage = () => {
     dispatch(removeFromCart(productId));
   };
   const cartTotal = cart.reduce((total, item) => total + item.total_price, 0);
+  
+  
+  
+  const handleCheckout = async () => {
+    try {
+      console.log('before checkout')
+      const response = await dispatch(checkoutCart()).unwrap();
+
+        console.log('Order successful:', response);
+        navigate('/payment'); // Redirect to payment page
+
+        alert('Order placed successfully!');
+
+    } catch (error) {
+      console.error('Checkout failed:', error);
+      alert('Failed to place order. Please try again.');
+
+    }
+  };
+  
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
@@ -73,6 +95,12 @@ const CartPage = () => {
           <div className="mt-4 text-right text-xl font-bold">
             Total: ${cartTotal.toFixed(2)}
           </div>
+          <button
+            onClick={handleCheckout}
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            Place Order
+          </button>
         </div>
       )}
     </div>

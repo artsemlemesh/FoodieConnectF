@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { addToCart } from '../features/cartSlice';
+import { addToCart, checkoutCart } from '../features/cartSlice';
 import useAuthAndFetchCart from '../hooks/useAuthAndFetchCart';
 
 const CheckoutPage = () => {
@@ -18,7 +18,7 @@ const CheckoutPage = () => {
 
   const handleCheckout = async () => {
     try {
-        const response = await dispatch(addToCart()).unwrap()
+        const response = await dispatch(checkoutCart()).unwrap()
         console.log('Order successful:', response);
         alert('Order placed successfully!');
         navigate('/'); // Redirect to home or order confirmation page

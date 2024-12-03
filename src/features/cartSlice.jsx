@@ -55,7 +55,7 @@ export const addToCart = createAsyncThunk(
   'cart/addToCart',
   async (item, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.post('/cart/cart/', item);
+      const response = await axiosClient.post(`${apiUrl}/cart/cart/`, item);
       return response.data;
     } catch (error) {
       console.error('Error adding item to cart:', error);
@@ -69,13 +69,39 @@ export const removeFromCart = createAsyncThunk(
   'cart/removeFromCart',
   async (productId, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.delete('/cart/cart/', {
+      const response = await axiosClient.delete(`${apiUrl}/cart/cart/`, {
         data: { product_id: productId },
       });
       console.log('removeFromCart', response);
       return productId;
     } catch (error) {
       console.error('Error removing item from cart:', error);
+      return rejectWithValue(error.response ? error.response.data : error.message);
+    }
+  }
+);
+
+
+export const checkoutCart = createAsyncThunk(
+  'cart/checkoutCart',
+  async (_, {getState, rejectWithValue }) => {
+
+    
+    try {
+      const state = getState();
+    const cartItems = state.cart.items; // Access cart items from state
+    const cartTotal = cartItems.reduce((total, item) => total + item.total_price, 0);
+
+      console.log('before stripe')
+
+      const response = await axiosClient.post(`${apiUrl}/cart/create-payment-intent/`, {
+      
+        amount: cartTotal * 100
+      });
+      console.log('stripe', response)
+      return response.data; // Contains the Stripe Checkout URL
+    } catch (error) {
+      console.error('Error during checkout:', error);
       return rejectWithValue(error.response ? error.response.data : error.message);
     }
   }
@@ -136,7 +162,19 @@ const cartSlice = createSlice({
       .addCase(updateCartItem.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(checkoutCart.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(checkoutCart.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.checkoutUrl = action.payload.url; // Save the Stripe URL to state
+      })
+      .addCase(checkoutCart.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload || action.error.message;
       });
+
   },
 });
 
