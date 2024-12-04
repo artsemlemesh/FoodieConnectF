@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { checkoutCart, removeFromCart, updateCartItem } from '../features/cartSlice';
 import useAuthAndFetchCart from '../hooks/useAuthAndFetchCart';
 import { useNavigate } from 'react-router-dom';
+import OrderStatus from '../components/withoutStories/OrderStatus';
 
 const CartPage = () => {
   useAuthAndFetchCart();
@@ -103,6 +104,8 @@ const CartPage = () => {
           </button>
         </div>
       )}
+      <h1>temporary put status component for implementation</h1>
+      <OrderStatus/>
     </div>
   );
 };

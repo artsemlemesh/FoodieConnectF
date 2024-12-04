@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
-import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import {
+  CardElement,
+  useStripe,
+  useElements,
+  PaymentElement,
+} from '@stripe/react-stripe-js';
 
-const PaymentForm = ({ clientSecret }) => {
+const PaymentForm = ({ clientSecret, cartTotal }) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -16,49 +21,66 @@ const PaymentForm = ({ clientSecret }) => {
       return;
     }
 
+    if (!clientSecret) {
+      alert('Payment intent secret is missing. Please try again.');
+      return;
+    }
+
     setLoading(true);
     setPaymentStatus('');
 
     try {
-      const cardElement = elements.getElement(CardElement);
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+        console.error('Submit error:', submitError);
+        setPaymentStatus('Validation failed. Please check your details and try again.');
+        setLoading(false);
+        return;
+      }
+      console.log('Submitting payment with clientSecret:', clientSecret);
 
-      const { paymentIntent, error } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: cardElement,
+      const { error } = await stripe.confirmPayment({
+        elements,
+        clientSecret,
+        confirmParams: {
+          return_url: 'http://localhost:3001/success',
         },
       });
 
       if (error) {
         console.error('Payment failed:', error);
         setPaymentStatus('Payment failed. Please try again.');
-        setLoading(false);
-        return;
+      } else {
+        setPaymentStatus('Payment succeeded!');
       }
-
-      setPaymentStatus(`Payment succeeded! PaymentIntent ID: ${paymentIntent.id}`);
-      setLoading(false);
     } catch (err) {
       console.error('Error confirming card payment:', err);
       setPaymentStatus('An unexpected error occurred. Please try again.');
+    } finally {
       setLoading(false);
     }
   };
 
+  const paymentElementOptions = {
+    layout: 'accordion',
+  };
+
   return (
-    <div>
-      <h2 className="text-xl font-bold mb-4">Complete Payment</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <CardElement />
-        </div>
+    <div className='max-w-md mx-auto p-4'>
+      <form onSubmit={handleSubmit} className='space-y-4'>
+        <PaymentElement id="payment-element" options={paymentElementOptions} />
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="w-full bg-blue-600 text-white px-4 py-2 rounded"
           disabled={!stripe || loading}
         >
-          {loading ? 'Processing...' : 'Pay'}
+          {loading ? 'Processing...' : `Pay $${cartTotal.toFixed(2)}`}
         </button>
+        {/* Show any error or success messages */}
+        {/* {message && <div id="payment-message">{message}</div>} */}
       </form>
+
+     
       {paymentStatus && <p className="mt-4">{paymentStatus}</p>}
     </div>
   );

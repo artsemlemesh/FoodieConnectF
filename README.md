@@ -80,3 +80,15 @@ yarn add @mui/icons-material
 
 # working on redux for frontend registration/login
 
+start proj: 
+# yarn dev
+storybook:
+yarn storybook
+
+
+BACKEND:
+test stripe locally
+stripe listen --forward-to localhost:8000/cart/stripe/webhook/
+
+and this in 3rd terminal: 
+stripe trigger payment_intent.succeeded

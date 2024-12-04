@@ -18,10 +18,10 @@ const PaymentWrapper = () => {
   useEffect(() => {
     const fetchClientSecret = async () => {
       try {
-        console.log('fetchClientSecret')
         const response = await axiosClient.post('/cart/create-payment-intent/', {
           amount: cartTotal * 100, // Convert to cents
         });
+
         setClientSecret(response.data.clientSecret);
       } catch (error) {
         console.error('Error fetching clientSecret:', error);
@@ -39,7 +39,7 @@ const PaymentWrapper = () => {
 
   return (
     <Elements stripe={stripePromise} options={{ clientSecret }}>
-      <PaymentForm />
+      <PaymentForm clientSecret={clientSecret} cartTotal={cartTotal}/>
     </Elements>
   );
 };
