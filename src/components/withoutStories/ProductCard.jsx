@@ -2,7 +2,6 @@ import React from 'react';
 
 const ProductCard = ({ product, onAddToCart }) => {
   const { name, price, description, photo } = product;
-  console.log('photo', photo)
 
   return (
     <div className="border rounded-lg shadow-md p-4 bg-white">

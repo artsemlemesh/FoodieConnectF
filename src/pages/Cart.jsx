@@ -3,6 +3,7 @@ import { checkoutCart, removeFromCart, updateCartItem } from '../features/cartSl
 import useAuthAndFetchCart from '../hooks/useAuthAndFetchCart';
 import { useNavigate } from 'react-router-dom';
 import OrderStatus from '../components/withoutStories/OrderStatus';
+import LiveOrderStatus from '../components/withoutStories/LiveOrderStatus';
 
 const CartPage = () => {
   useAuthAndFetchCart();
@@ -106,6 +107,7 @@ const CartPage = () => {
       )}
       <h1>temporary put status component for implementation</h1>
       <OrderStatus/>
+      <LiveOrderStatus orderId={1}/>
     </div>
   );
 };

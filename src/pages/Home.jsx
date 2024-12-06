@@ -35,7 +35,7 @@ const HomePage = () => {
       .unwrap()
       .then((response) => {
         alert(`${product.name} has been added to the cart!`);
-        console.log('Cart updated:', response);
+        // console.log('Cart updated:', response);
       })
       .catch((error) => {
         console.error('Error adding to cart:', error);
