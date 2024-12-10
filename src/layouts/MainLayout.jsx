@@ -4,15 +4,10 @@ import Footer from '../components/Footer';
 import AuthForm from '../components/MyCards/AuthForm';
 import { useAppContext } from '../context/GlobalContext';
 import Modal from '../components/Modal';
-import { useDispatch, useSelector } from 'react-redux';
 
 const MainLayout = () => {
   const { isModalOpen, closeModal, isLogin, handleLogin, handleRegister } =
     useAppContext();
-
-    
-
-
 
   return (
     <div className="flex flex-col min-h-screen">

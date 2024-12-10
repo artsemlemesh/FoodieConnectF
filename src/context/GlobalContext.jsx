@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, registerUser } from '../features/authSlice';
 
@@ -9,6 +9,38 @@ export const AppProvider = ({ children }) => {
   const authStatus = useSelector((state) => state.auth.status);
   const error = useSelector((state) => state.auth.error);
   const user = useSelector((state) => state.auth.user);
+
+  const [state, setState] = useState({
+    orderId: null,
+  });
+
+  // Restore state from localStorage if available
+  useEffect(() => {
+    const storedOrderId = localStorage.getItem('orderId');
+    if (storedOrderId) {
+      setState((prev) => ({
+        ...prev,
+        orderId: storedOrderId, // Restore orderId into context
+      }));
+    }
+  }, []);
+
+  // Update localStorage whenever orderId changes
+  useEffect(() => {
+    if (state.orderId) {
+      localStorage.setItem('orderId', state.orderId);
+    } else {
+      localStorage.removeItem('orderId'); // Clean up if no orderId
+    }
+  }, [state.orderId]);
+  const setOrderId = (id) => {
+    console.log('Updating orderId to:', id);
+
+    setState((prev) => ({
+      ...prev,
+      orderId: id,
+    }));
+  };
 
   const cart = useSelector((state) => state.cart.items);
 
@@ -66,6 +98,10 @@ export const AppProvider = ({ children }) => {
         closeModal,
         isModalOpen,
         setIsModalOpen,
+
+        state,
+        setOrderId,
+        setState,
       }}
     >
       <div>{children}</div>

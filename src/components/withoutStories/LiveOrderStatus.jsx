@@ -1,36 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import useWebSocket from '../../hooks/useWebSocket';
 
+const webSocketUrl = import.meta.env.VITE_APP_WEBSOCKET_URL;
+
 const LiveOrderStatus = ({ orderId }) => {
-  const [status, setStatus] = useState('Pending');
-  console.log('STATUS', status)
-  // Function to handle incoming WebSocket messages
+  const [orderData, setOrderData] = useState({ status: 'Pending', eta: null });
+  console.log('orderData', orderData);
+
   const handleWebSocketMessage = (data) => {
-    console.log('1111')
-    console.log('Received WebSocket message:', data);
-    setStatus(data.message); // Update the status based on the message received
+    if (data.message === 'Delivered') {
+      setOrderData({ status: data.message, eta: null });
+    } else {
+      setOrderData({
+        status: data.message || 'Unknown',
+        eta: data.eta || null,
+      });
+    }
   };
-
   // Establish WebSocket connection
-  useWebSocket(`ws://localhost:8000/ws/orders/${orderId}/`, handleWebSocketMessage)
+  useWebSocket(`${webSocketUrl}/${orderId}/`, handleWebSocketMessage);
 
-  // // Optional: Send a message to the server (if needed)
-  // const sendStatusRequest = () => {
-  //   console.log('2222')
-  //   sendMessage({ message: 'Requesting order status' })
-  //   console.log('3333')
-
-  // };
-
-  // useEffect(() => {
-  //   // Optionally send a message when the component mounts
-  //   sendStatusRequest();
-  // }, [orderId]);
+  const formattedETA = orderData.eta
+    ? new Date(orderData.eta).toLocaleTimeString()
+    : 'Calculating...';
 
   return (
-    <div>
-      <h2>Order #{orderId}</h2>
-      <p>Status: {status}</p>
+    <div className="p-4">
+      <h2 className="text-xl font-bold">Order Status: {orderData.status}</h2>
+      {orderData.eta && <p>ETA: {formattedETA} minutes</p>}
     </div>
   );
 };

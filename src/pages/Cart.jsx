@@ -1,17 +1,24 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { checkoutCart, removeFromCart, updateCartItem } from '../features/cartSlice';
+import {
+  checkoutCart,
+  removeFromCart,
+  updateCartItem,
+} from '../features/cartSlice';
 import useAuthAndFetchCart from '../hooks/useAuthAndFetchCart';
 import { useNavigate } from 'react-router-dom';
 import OrderStatus from '../components/withoutStories/OrderStatus';
 import LiveOrderStatus from '../components/withoutStories/LiveOrderStatus';
+import { useAppContext } from '../context/GlobalContext';
 
 const CartPage = () => {
   useAuthAndFetchCart();
+  const { state, setOrderId } = useAppContext();
+  const orderId = state.orderId; // Access orderId from state
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const cart = useSelector((state) => state.cart.items); // Get cart items from Redux store
+  const cart = useSelector((state) => state.cart.items);
 
   const handleQuantityChange = (productId, newQuantity) => {
     if (newQuantity > 0) {
@@ -25,26 +32,22 @@ const CartPage = () => {
     dispatch(removeFromCart(productId));
   };
   const cartTotal = cart.reduce((total, item) => total + item.total_price, 0);
-  
-  
-  
+
   const handleCheckout = async () => {
     try {
-      console.log('before checkout')
+      console.log('before checkout');
       const response = await dispatch(checkoutCart()).unwrap();
 
-        console.log('Order successful:', response);
-        navigate('/payment'); // Redirect to payment page
+      console.log('Order successful:', response);
+      setOrderId(response.order_id);
 
-        alert('Order placed successfully!');
-
+      navigate('/payment');
     } catch (error) {
       console.error('Checkout failed:', error);
       alert('Failed to place order. Please try again.');
-
     }
   };
-  
+
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
@@ -106,8 +109,9 @@ const CartPage = () => {
         </div>
       )}
       <h1>temporary put status component for implementation</h1>
-      <OrderStatus/>
-      <LiveOrderStatus orderId={1}/>
+      <OrderStatus />
+      {orderId && <LiveOrderStatus orderId={orderId} />}{' '}
+      {/* Only render if orderId is available */}
     </div>
   );
 };

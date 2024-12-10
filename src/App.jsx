@@ -10,6 +10,7 @@ import CartPage from './pages/Cart';
 import SuccessPage from './components/withoutStories/SuccessPage';
 import CancelPage from './components/withoutStories/CancelPage';
 import PaymentWrapper from './utils/PaymentWrapper';
+import LiveOrderStatus from './components/withoutStories/LiveOrderStatus';
 
 
 function App() {
@@ -28,6 +29,8 @@ function App() {
               <Route path="/success" element={<SuccessPage />} />
               <Route path="/cancel" element={<CancelPage />} />
               <Route path="/payment" element={<PaymentWrapper />} />
+              <Route path="/orders/:orderId/track" element={<LiveOrderStatus />} />  {/* HAVENT USED THIS PAGE, NEED TO REDIRECT AFTER SUCCESSFUL PAYMENT LATER INSTEAD OF CURRECT (SUCCESS) */}
+              
             </Route>
           </Routes>
         

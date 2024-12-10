@@ -15,7 +15,7 @@ setupAxiosInterceptors(store.dispatch);
 
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
         <AppProvider>
@@ -23,5 +23,5 @@ createRoot(document.getElementById('root')).render(
         </AppProvider>
       </Provider>
     </QueryClientProvider>
-  </StrictMode>
+  // </StrictMode>
 );
