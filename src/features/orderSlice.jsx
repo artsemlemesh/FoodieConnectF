@@ -1,11 +1,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { axiosClient } from '../utils/axiosClient';
 
+const apiUrl = import.meta.env.VITE_APP_API_URL;
+
+
 export const fetchOrderStatus = createAsyncThunk(
   'orders/fetchOrderStatus',
   async (orderId, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.get(`${apiUrl}/cart/orders/${orderId}/`);
+      const response = await axiosClient.get(
+        `${apiUrl}/cart/orders/${orderId}/`
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -28,9 +33,27 @@ export const updateOrderStatus = createAsyncThunk(
   }
 );
 
+export const fetchOrders = createAsyncThunk(
+  'orders/fetchOrders',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.get(`${apiUrl}/cart/orders/`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
 const orderSlice = createSlice({
   name: 'orders',
-  initialState: { status: 'Pending', error: null },
+  initialState: {
+    orders: [],
+    status: 'idle',
+    error: null,
+  },
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -39,7 +62,18 @@ const orderSlice = createSlice({
       })
       .addCase(updateOrderStatus.fulfilled, (state, action) => {
         state.status = action.payload.status;
-      });
+      })
+      .addCase(fetchOrders.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.orders = action.payload;
+      })
+      .addCase(fetchOrders.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchOrders.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
   },
 });
 

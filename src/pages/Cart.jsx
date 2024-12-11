@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import OrderStatus from '../components/withoutStories/OrderStatus';
 import LiveOrderStatus from '../components/withoutStories/LiveOrderStatus';
 import { useAppContext } from '../context/GlobalContext';
+import PurchaseHistory from '../components/withoutStories/PurchaseHistory';
 
 const CartPage = () => {
   useAuthAndFetchCart();
@@ -112,6 +113,7 @@ const CartPage = () => {
       <OrderStatus />
       {orderId && <LiveOrderStatus orderId={orderId} />}{' '}
       {/* Only render if orderId is available */}
+      <PurchaseHistory/>
     </div>
   );
 };
