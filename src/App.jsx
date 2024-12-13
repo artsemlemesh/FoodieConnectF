@@ -11,29 +11,43 @@ import SuccessPage from './components/withoutStories/SuccessPage';
 import CancelPage from './components/withoutStories/CancelPage';
 import PaymentWrapper from './utils/PaymentWrapper';
 import LiveOrderStatus from './components/withoutStories/LiveOrderStatus';
+import RestaurantDetailsPage from './pages/Restaurant';
+import RestaurantList from './pages/RestaurantsList';
+import Dashboard from './pages/Dashboard';
+import { rawRoutes } from './utils/routesConfig';
 
+const routeComponents = {
+  '': <Home />,
+  about: <About />,
+  contact: <Contact />,
+  'order-food': <OrderFood />,
+  '/cart': <CartPage />,
+  '/success': <SuccessPage />,
+  '/cancel': <CancelPage />,
+  '/payment': <PaymentWrapper />,
+  '/orders/:orderId/track': <LiveOrderStatus />,
+  '/restaurants': <RestaurantList />,
+  '/restaurants/:id': <RestaurantDetailsPage />,
+  '/dashboard': <Dashboard />,
+};
 
 function App() {
-
   return (
     <>
       <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<MainLayout />}>
-              <Route index element={<Home />} />
-              <Route path="about" element={<About />} />
-              <Route path="contact" element={<Contact />} />
-              <Route path="order-food" element={<OrderFood />} />
-              <Route path="/cart" element={<CartPage />} />
-              {/* <Route path="/checkout" element={<CheckoutPage />} /> */}
-              <Route path="/success" element={<SuccessPage />} />
-              <Route path="/cancel" element={<CancelPage />} />
-              <Route path="/payment" element={<PaymentWrapper />} />
-              <Route path="/orders/:orderId/track" element={<LiveOrderStatus />} />  {/* HAVENT USED THIS PAGE, NEED TO REDIRECT AFTER SUCCESSFUL PAYMENT LATER INSTEAD OF CURRECT (SUCCESS) */}
-              
+        <Routes>
+          {rawRoutes.map((route) => (
+            <Route key={route.path} path={route.path} element={<MainLayout />}>
+              {route.children.map((child) => (
+                <Route
+                  key={child.path}
+                  path={child.path}
+                  element={routeComponents[child.path]}
+                />
+              ))}
             </Route>
-          </Routes>
-        
+          ))}
+        </Routes>
       </BrowserRouter>
     </>
   );

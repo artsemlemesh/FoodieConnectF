@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrders } from "../../features/orderSlice";
-import LiveOrderStatus from "./LiveOrderStatus";
 
 
 
@@ -33,7 +32,6 @@ const PurchaseHistory = () => {
                 <h4 className="font-bold">Order #{order.id}</h4>
                 <p>Status: {order.status}</p>
                 <p>Total: ${order.total_amount}</p>
-                <LiveOrderStatus orderId={order.id} />
               </div>
             ))
           )}

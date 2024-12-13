@@ -6,7 +6,6 @@ import {
 } from '../features/cartSlice';
 import useAuthAndFetchCart from '../hooks/useAuthAndFetchCart';
 import { useNavigate } from 'react-router-dom';
-import OrderStatus from '../components/withoutStories/OrderStatus';
 import LiveOrderStatus from '../components/withoutStories/LiveOrderStatus';
 import { useAppContext } from '../context/GlobalContext';
 import PurchaseHistory from '../components/withoutStories/PurchaseHistory';
@@ -20,6 +19,7 @@ const CartPage = () => {
   const navigate = useNavigate();
 
   const cart = useSelector((state) => state.cart.items);
+  console.log('cart:', cart);
 
   const handleQuantityChange = (productId, newQuantity) => {
     if (newQuantity > 0) {
@@ -109,9 +109,9 @@ const CartPage = () => {
           </button>
         </div>
       )}
-      <h1>temporary put status component for implementation</h1>
-      <OrderStatus />
-      {orderId && <LiveOrderStatus orderId={orderId} />} <PurchaseHistory />
+      
+      {orderId && <LiveOrderStatus orderId={orderId} />} 
+      <PurchaseHistory />
     </div>
   );
 };
