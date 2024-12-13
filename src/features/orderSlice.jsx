@@ -3,7 +3,7 @@ import { axiosClient } from '../utils/axiosClient';
 
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 
-
+//fix this backend later, no such endpoint
 export const fetchOrderStatus = createAsyncThunk(
   'orders/fetchOrderStatus',
   async (orderId, { rejectWithValue }) => {
@@ -11,6 +11,7 @@ export const fetchOrderStatus = createAsyncThunk(
       const response = await axiosClient.get(
         `${apiUrl}/cart/orders/${orderId}/`
       );
+      console.log('fetchOrderStatus',response);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);

@@ -92,3 +92,10 @@ stripe listen --forward-to localhost:8000/cart/stripe/webhook/
 
 and this in 3rd terminal: 
 stripe trigger payment_intent.succeeded
+
+
+
+# for order tracking
+yarn add leaflet react-leaflet
+
+add to tailwind.css : @import "leaflet/dist/leaflet.css";

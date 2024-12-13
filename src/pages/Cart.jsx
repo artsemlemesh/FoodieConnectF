@@ -15,7 +15,7 @@ const CartPage = () => {
   useAuthAndFetchCart();
   const { state, setOrderId } = useAppContext();
   const orderId = state.orderId; // Access orderId from state
-
+  console.log('orderId:', orderId);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -111,9 +111,7 @@ const CartPage = () => {
       )}
       <h1>temporary put status component for implementation</h1>
       <OrderStatus />
-      {orderId && <LiveOrderStatus orderId={orderId} />}{' '}
-      {/* Only render if orderId is available */}
-      <PurchaseHistory/>
+      {orderId && <LiveOrderStatus orderId={orderId} />} <PurchaseHistory />
     </div>
   );
 };
