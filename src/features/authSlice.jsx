@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { axiosClient } from '../utils/axiosClient';
 
-const apiUrl = import.meta.env.VITE_APP_API_URL
+const apiUrl = import.meta.env.VITE_APP_API_URL;
 
 const initialState = {
   user: JSON.parse(localStorage.getItem('user')) || null,
@@ -34,7 +34,9 @@ export const registerUser = createAsyncThunk(
       return user; // Return user data
     } catch (error) {
       console.error('Register error:', error);
-      return rejectWithValue(error.response ? error.response.data : error.message);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
     }
   }
 );
@@ -60,7 +62,9 @@ export const loginUser = createAsyncThunk(
       return user;
     } catch (error) {
       console.error('Login error:', error);
-      return rejectWithValue(error.response ? error.response.data : error.message);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
     }
   }
 );
@@ -71,22 +75,28 @@ export const refreshAccessToken = createAsyncThunk(
     try {
       const refreshToken = localStorage.getItem('refresh_token');
       if (!refreshToken) throw new Error('No refresh token available');
-
-      const response = await axiosClient.post(`${apiUrl}/users/token/refresh/`, {
-        refresh: refreshToken,
-      });
+      console.log('Attempting token refresh...');
+      const response = await axiosClient.post(
+        `${apiUrl}/users/token/refresh/`,
+        {
+          refresh: refreshToken,
+        }
+      );
 
       const data = response.data;
+      // console.log('Refresh token response:', data);
       localStorage.setItem('access_token', data.access);
 
+      console.log('New access token:', data.access);
       return data.access; // Return new access token
     } catch (error) {
       console.error('Refresh token error:', error);
-      return rejectWithValue(error.response ? error.response.data : error.message);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
     }
   }
 );
-
 
 // const fetchWithRefresh = async (url, options = {}) => {
 //   const accessToken = localStorage.getItem('access_token');
@@ -125,30 +135,35 @@ export const fetchUserProfile = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.error('Error fetching user profile:', error);
-      return rejectWithValue(error.response ? error.response.data : error.message);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
     }
   }
 );
 
-export const logoutUser = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
-  try {
-    const refreshToken = localStorage.getItem('refresh_token');
-    if (!refreshToken) throw new Error('No refresh token available');
+export const logoutUser = createAsyncThunk(
+  'auth/logout',
+  async (_, { rejectWithValue }) => {
+    try {
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (!refreshToken) throw new Error('No refresh token available');
 
-    const response = await axiosClient.post(`${apiUrl}/users/logout/`, {
-      refresh_token: refreshToken,
-    });
+      const response = await axiosClient.post(`${apiUrl}/users/logout/`, {
+        refresh_token: refreshToken,
+      });
 
-    console.log('Logout successful');
-    localStorage.clear();
-    return null;
-  } catch (error) {
-    console.error('Logout error:', error);
-    return rejectWithValue(error.response ? error.response.data : error.message);
+      console.log('Logout successful');
+      localStorage.clear();
+      return null;
+    } catch (error) {
+      console.error('Logout error:', error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
   }
-});
-
-
+);
 
 const authSlice = createSlice({
   name: 'auth',
@@ -162,9 +177,9 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.user = {
-            username: action.payload.username, // this username should be the same as in other places
-            photo: action.payload.photo,
-          };
+          username: action.payload.username, // this username should be the same as in other places
+          photo: action.payload.photo,
+        };
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.status = 'failed';
@@ -186,7 +201,6 @@ const authSlice = createSlice({
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
-        
       })
       .addCase(fetchUserProfile.pending, (state) => {
         state.status = 'loading';
@@ -204,8 +218,9 @@ const authSlice = createSlice({
       })
       .addCase(refreshAccessToken.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload;
-        state.user = null; // Logout user if refresh token fails
+        state.error = 'Token refresh failed. Logging out.';
+        state.user = null; // Clear user data
+        localStorage.clear(); // Clear tokens from storage
       });
   },
 });

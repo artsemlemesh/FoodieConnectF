@@ -5,7 +5,7 @@ import { rawRoutes } from '../utils/routesConfig';
 const Header = () => {
   const { user, openModal } = useAppContext();
 
-  const excludedPaths = ['/success', '/cancel', '/payment', '/orders/:orderId/track'];
+  const excludedPaths = ['/success', '/cancel', '/payment', '/orders/:orderId/track', 'order-food'];
   // Filter out routes with labels for navigation links
   const navigationLinks = rawRoutes[0].children.filter((route) => route.label && !excludedPaths.includes(route.path));
 

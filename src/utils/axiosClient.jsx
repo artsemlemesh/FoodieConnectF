@@ -1,7 +1,6 @@
 import axios from 'axios';
-import { refreshAccessToken } from '../features/authSlice';
 
-const apiUrl = import.meta.env.VITE_APP_API_URL
+const apiUrl = import.meta.env.VITE_APP_API_URL;
 
 export const axiosClient = axios.create({
   baseURL: apiUrl,
@@ -10,7 +9,7 @@ export const axiosClient = axios.create({
   },
 });
 
-// Request interceptor to add the Authorization header
+// Request interceptor: attach access token to headers
 axiosClient.interceptors.request.use(
   (config) => {
     const accessToken = localStorage.getItem('access_token');
@@ -22,26 +21,21 @@ axiosClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle token refresh
-export const setupAxiosInterceptors = (dispatch) => {
+// Response interceptor: handle 401 errors and logout
+export const setupAxiosInterceptors = () => {
   axiosClient.interceptors.response.use(
-    (response) => response,
+    (response) => response, // Pass through if the response is successful
     async (error) => {
       const originalRequest = error.config;
-      if (error.response.status === 401 && !originalRequest._retry) {
-        originalRequest._retry = true;
-        try {
-          const newAccessToken = await dispatch(refreshAccessToken()).unwrap();
-          axios.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
-          return axiosClient(originalRequest);
-        } catch (refreshError) {
-          localStorage.clear(); // Clear tokens
-          // window.location.href = '/login'; // Redirect to login
-          return Promise.reject(refreshError);
-        }
+
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        console.error('Unauthorized request. Logging out user...');
+        localStorage.clear(); // Clear tokens and user data
+        window.location.href = '/'; // Redirect to homepage or login page
+        return Promise.reject(error);
       }
-      return Promise.reject(error);
+
+      return Promise.reject(error); // Propagate other errors
     }
   );
 };
-
