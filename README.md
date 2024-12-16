@@ -99,3 +99,4 @@ stripe trigger payment_intent.succeeded
 yarn add leaflet react-leaflet
 
 add to tailwind.css : @import "leaflet/dist/leaflet.css";
+

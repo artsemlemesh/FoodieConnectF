@@ -5,12 +5,34 @@ services:
     build: .
     ports:
       - "3001:3001"
+
   backend:
     build: ../FoodieConnectB/myproject/
     ports:
       - "8000:8000"
-  
-   
+    depends_on:
+      - db  # Ensure the database service starts before the backend
+    environment:
+      # Database connection settings
+      DB_ENGINE: django.db.backends.postgresql
+      DB_NAME: foodieconnect_db
+      DB_USER: foodieconnect_user
+      DB_PASSWORD: foodieconnect_password
+      DB_HOST: db
+      DB_PORT: 5432
 
-
-
+  db:
+    image: postgres:15  # Use the latest stable PostgreSQL version
+    container_name: foodieconnect_db
+    restart: always
+    environment:
+      POSTGRES_DB: foodieconnect_db
+      POSTGRES_USER: foodieconnect_user
+      POSTGRES_PASSWORD: foodieconnect_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"  # Expose PostgreSQL port to the host machine (optional)
+      
+volumes:
+  postgres_data:
