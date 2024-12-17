@@ -112,3 +112,16 @@ If wscat still doesn’t work globally, try running it directly using npx:
 
 docker-compose down
 docker-compose up --build
+
+
+
+TO CHECK WHICH CONTAINERS ARE ON:
+# docker ps
+
+to enter a BACKEND container, which handles db use this command:
+# docker exec -it foodieconnectf-backend-1 bash
+
+
+
+and then:
+ # python manage.py createsuperuser

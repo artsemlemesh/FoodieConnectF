@@ -6,32 +6,34 @@ services:
     ports:
       - "3001:3001"
 
-    # environment:
-    #   VITE_APP_WEBSOCKET_URL: ws://backend:8000/ws/orders  # Match the backend service name
+  
 
   # redis:
   #   image: redis:7
 
   backend:
     build: ../FoodieConnectB/myproject/
-    command: daphne -b 0.0.0.0 -p 8000 myproject.asgi:application  # Use Daphne as the main server
+    command: /bin/sh -c "python manage.py migrate && daphne -b 0.0.0.0 -p 8000 myproject.asgi:application"  # Run migrations before starting Daphne
     ports:
       - "8000:8000"  # Expose Daphne's port
     depends_on:
       - db
       - redis
-    environment:
-      # Database configuration
-      DB_ENGINE: django.db.backends.postgresql
-      DB_NAME: foodieconnect_db
-      DB_USER: foodieconnect_user
-      DB_PASSWORD: foodieconnect_password
-      DB_HOST: db
-      DB_PORT: 5432
+
+    env_file:
+      - .env.docker 
+    # environment:
+    #   # Database configuration
+    #   DB_ENGINE: django.db.backends.postgresql
+    #   DB_NAME: foodieconnect_db
+    #   DB_USER: foodieconnect_user
+    #   DB_PASSWORD: foodieconnect_password
+    #   DB_HOST: db
+    #   DB_PORT: 5432
 
       # Redis settings for Celery and Channels
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+      # REDIS_HOST: redis
+      # REDIS_PORT: 6379
     volumes:
       - ./media:/app/media
 
@@ -39,10 +41,12 @@ services:
     image: postgres:15
     container_name: foodieconnect_db
     restart: always
-    environment:
-      POSTGRES_DB: foodieconnect_db
-      POSTGRES_USER: foodieconnect_user
-      POSTGRES_PASSWORD: foodieconnect_password
+    env_file:
+      - .env.docker
+    # environment:
+    #   POSTGRES_DB: foodieconnect_db
+    #   POSTGRES_USER: foodieconnect_user
+    #   POSTGRES_PASSWORD: foodieconnect_password
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -61,15 +65,8 @@ services:
     depends_on:
       - backend
       - redis
-    environment:
-      DB_ENGINE: django.db.backends.postgresql
-      DB_NAME: foodieconnect_db
-      DB_USER: foodieconnect_user
-      DB_PASSWORD: foodieconnect_password
-      DB_HOST: db
-      DB_PORT: 5432
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+    env_file:
+      - .env.docker
 
   celery_beat:
     build: ../FoodieConnectB/myproject/
@@ -77,15 +74,8 @@ services:
     depends_on:
       - backend
       - redis
-    environment:
-      DB_ENGINE: django.db.backends.postgresql
-      DB_NAME: foodieconnect_db
-      DB_USER: foodieconnect_user
-      DB_PASSWORD: foodieconnect_password
-      DB_HOST: db
-      DB_PORT: 5432
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+    env_file:
+      - .env.docker
 
 volumes:
   postgres_data:

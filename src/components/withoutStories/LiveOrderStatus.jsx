@@ -4,6 +4,7 @@ import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import L from 'leaflet';
 
 const webSocketUrl = import.meta.env.VITE_APP_WEBSOCKET_URL;
+console.log('webSOKEG', webSocketUrl)
 
 const LiveOrderStatus = ({ orderId }) => {
   const [orderData, setOrderData] = useState({
