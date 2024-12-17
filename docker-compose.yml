@@ -6,14 +6,22 @@ services:
     ports:
       - "3001:3001"
 
+    # environment:
+    #   VITE_APP_WEBSOCKET_URL: ws://backend:8000/ws/orders  # Match the backend service name
+
+  # redis:
+  #   image: redis:7
+
   backend:
     build: ../FoodieConnectB/myproject/
+    command: daphne -b 0.0.0.0 -p 8000 myproject.asgi:application  # Use Daphne as the main server
     ports:
-      - "8000:8000"
+      - "8000:8000"  # Expose Daphne's port
     depends_on:
-      - db  # Ensure the database service starts before the backend
+      - db
+      - redis
     environment:
-      # Database connection settings
+      # Database configuration
       DB_ENGINE: django.db.backends.postgresql
       DB_NAME: foodieconnect_db
       DB_USER: foodieconnect_user
@@ -21,8 +29,14 @@ services:
       DB_HOST: db
       DB_PORT: 5432
 
+      # Redis settings for Celery and Channels
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    volumes:
+      - ./media:/app/media
+
   db:
-    image: postgres:15  # Use the latest stable PostgreSQL version
+    image: postgres:15
     container_name: foodieconnect_db
     restart: always
     environment:
@@ -32,7 +46,46 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"  # Expose PostgreSQL port to the host machine (optional)
-      
+      - "5432:5432"
+
+  redis:
+    image: redis:6
+    container_name: foodieconnect_redis
+    restart: always
+    ports:
+      - "6379:6379"  # Expose Redis port for debugging
+
+  celery_worker:
+    build: ../FoodieConnectB/myproject/
+    command: celery -A myproject worker --loglevel=info
+    depends_on:
+      - backend
+      - redis
+    environment:
+      DB_ENGINE: django.db.backends.postgresql
+      DB_NAME: foodieconnect_db
+      DB_USER: foodieconnect_user
+      DB_PASSWORD: foodieconnect_password
+      DB_HOST: db
+      DB_PORT: 5432
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+  celery_beat:
+    build: ../FoodieConnectB/myproject/
+    command: celery -A myproject beat --loglevel=info
+    depends_on:
+      - backend
+      - redis
+    environment:
+      DB_ENGINE: django.db.backends.postgresql
+      DB_NAME: foodieconnect_db
+      DB_USER: foodieconnect_user
+      DB_PASSWORD: foodieconnect_password
+      DB_HOST: db
+      DB_PORT: 5432
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
 volumes:
   postgres_data:

@@ -100,3 +100,15 @@ yarn add leaflet react-leaflet
 
 add to tailwind.css : @import "leaflet/dist/leaflet.css";
 
+
+
+#Step 5: Alternative - Run wscat Without Global Install
+
+If wscat still doesn’t work globally, try running it directly using npx:
+
+
+## npx wscat -c ws://localhost:8000/ws/orders/2/
+## npx wscat -c ws://backend:8000/ws/orders/2/
+
+docker-compose down
+docker-compose up --build

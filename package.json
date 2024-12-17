@@ -39,6 +39,7 @@
     "reactstrap": "^9.2.3",
     "recharts": "^2.15.0",
     "serve": "^14.2.4",
+    "wscat": "^6.0.1",
     "yup": "^1.4.0"
   },
   "devDependencies": {
