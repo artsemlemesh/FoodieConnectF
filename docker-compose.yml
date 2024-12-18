@@ -6,34 +6,17 @@ services:
     ports:
       - "3001:3001"
 
-  
-
-  # redis:
-  #   image: redis:7
-
   backend:
     build: ../FoodieConnectB/myproject/
     command: /bin/sh -c "python manage.py migrate && daphne -b 0.0.0.0 -p 8000 myproject.asgi:application"  # Run migrations before starting Daphne
     ports:
-      - "8000:8000"  # Expose Daphne's port
+      - "8000:8000"  
     depends_on:
       - db
       - redis
 
     env_file:
       - .env.docker 
-    # environment:
-    #   # Database configuration
-    #   DB_ENGINE: django.db.backends.postgresql
-    #   DB_NAME: foodieconnect_db
-    #   DB_USER: foodieconnect_user
-    #   DB_PASSWORD: foodieconnect_password
-    #   DB_HOST: db
-    #   DB_PORT: 5432
-
-      # Redis settings for Celery and Channels
-      # REDIS_HOST: redis
-      # REDIS_PORT: 6379
     volumes:
       - ./media:/app/media
 
@@ -43,10 +26,6 @@ services:
     restart: always
     env_file:
       - .env.docker
-    # environment:
-    #   POSTGRES_DB: foodieconnect_db
-    #   POSTGRES_USER: foodieconnect_user
-    #   POSTGRES_PASSWORD: foodieconnect_password
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
