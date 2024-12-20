@@ -8,7 +8,7 @@ const RestaurantDetailsPage = () => {
   const { id } = useParams(); //get user id from url
 
   const [restaurant, setRestaurant] = useState(null);
-
+  console.log('rest', restaurant)
 
   useEffect(() => {
     const fetchData = async () => {

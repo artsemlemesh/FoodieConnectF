@@ -142,6 +142,27 @@ export const fetchUserProfile = createAsyncThunk(
   }
 );
 
+
+
+export const fetchAllUsersProfile = createAsyncThunk(
+  'auth/fetchAllUsersProfile',
+  async (_, { rejectWithValue }) => {
+    try {
+      console.log('before response')
+      const response = await axiosClient.get(`${apiUrl}/users/users`, {
+        withCredentials: true, // Include credentials for authentication
+      });
+      console.log('USERS', response.data)
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
 export const logoutUser = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
@@ -210,6 +231,17 @@ const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(fetchAllUsersProfile.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchAllUsersProfile.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.user = action.payload;
+      })
+      .addCase(fetchAllUsersProfile.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
       })

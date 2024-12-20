@@ -1,13 +1,9 @@
 import { NavLink } from 'react-router-dom';
 import { useAppContext } from '../context/GlobalContext';
-import { rawRoutes } from '../utils/routesConfig';
 
 const Header = () => {
   const { user, openModal } = useAppContext();
 
-  const excludedPaths = ['/success', '/cancel', '/payment', '/orders/:orderId/track', 'order-food'];
-  // Filter out routes with labels for navigation links
-  const navigationLinks = rawRoutes[0].children.filter((route) => route.label && !excludedPaths.includes(route.path));
 
   return (
     <header className="bg-blue-600 text-white p-4">
@@ -23,11 +19,46 @@ const Header = () => {
               Login/Register
             </button>
           )}
-          {navigationLinks.map((link) => (
-            <NavLink key={link.path} to={link.path} className="hover:underline">
-              {link.label}
-            </NavLink>
-          ))}
+          {/* Manually adding navigation links for each route */}
+          <NavLink to="/" className="hover:underline">
+            Home
+          </NavLink>
+          <NavLink to="/about" className="hover:underline">
+            About
+          </NavLink>
+          <NavLink to="/contact" className="hover:underline">
+            Contact
+          </NavLink>
+          <NavLink to="/order-food" className="hover:underline">
+            Order Food
+          </NavLink>
+          <NavLink to="/cart" className="hover:underline">
+            Cart
+          </NavLink>
+          {/* <NavLink to="/success" className="hover:underline">
+            Success
+          </NavLink>
+          <NavLink to="/cancel" className="hover:underline">
+            Cancel
+          </NavLink>
+          <NavLink to="/payment" className="hover:underline">
+            Payment
+          </NavLink> */}
+          <NavLink to="/orders/:orderId/track" className="hover:underline">
+            Order Tracking
+          </NavLink>
+          <NavLink to="/restaurants" className="hover:underline">
+            Restaurants
+          </NavLink>
+          {/* <NavLink to="/restaurants/:id" className="hover:underline">
+            Restaurant Details
+          </NavLink> */}
+          <NavLink to="/dashboard" className="hover:underline">
+            Dashboard
+          </NavLink>
+          <NavLink to="/admin" className="hover:underline">
+            Admin Dashboard
+          </NavLink>
         </nav>
       </div>
     </header>
