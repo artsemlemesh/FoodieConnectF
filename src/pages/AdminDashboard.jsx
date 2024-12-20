@@ -1,7 +1,21 @@
-import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { useAppContext } from '../context/GlobalContext';
 
 const AdminDashboard = () => {
+    const { user } = useAppContext();
+    const navigate = useNavigate();
+
+
+
+useEffect(() => {
+    if (!user.is_admin) {
+      console.log('No admin access');
+      navigate('/'); // Redirect to the home page if user is not an admin
+    }
+  }, [user ]);
+
+
   return (
     <div className="admin-dashboard">
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
