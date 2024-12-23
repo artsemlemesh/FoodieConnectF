@@ -25,7 +25,6 @@ const HomePage = () => {
       ? products
       : products.filter((product) => product.category === selectedCuisine);
 
-      
   const handleAddToCart = (product) => {
     const cartItem = {
       product_id: product.id,
@@ -59,8 +58,18 @@ const HomePage = () => {
             onAddToCart={handleAddToCart}
           />
         ))}
+
+        {/* this is for sentry to trigger the error and check in console */}
+        <button
+          type="button"
+          onClick={() => {
+            throw new Error('Sentry Test Error.');
+          }}
+        >
+          Break the world
+        </button>
+        
       </div>
-     
     </div>
   );
 };
