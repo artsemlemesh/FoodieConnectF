@@ -125,3 +125,10 @@ to enter a BACKEND container, which handles db use this command:
 
 and then:
  # python manage.py createsuperuser
+
+
+ # installed bundle analyzer , but its not running as should have
+
+ new files : build and webpack.config.js, check it later
+
+ 
