@@ -57,7 +57,7 @@ export const loginUser = createAsyncThunk(
       localStorage.setItem('access_token', data.access);
       localStorage.setItem('refresh_token', data.refresh);
 
-      const user = { username: data.username, photo: data.photo, is_admin: data.is_admin  };
+      const user = { username: data.username, photo: data.photo, is_admin: data.is_admin, id: data.id  };
       localStorage.setItem('user', JSON.stringify(user));
       return user;
     } catch (error) {
@@ -215,7 +215,8 @@ const authSlice = createSlice({
         state.user = {
           username: action.payload.username, // this username should be the same as in other places
           photo: action.payload.photo,
-          is_admin: action.payload.is_admin
+          is_admin: action.payload.is_admin,
+          id: action.payload.id // backend is set up seems like
         };
       })
       .addCase(loginUser.rejected, (state, action) => {

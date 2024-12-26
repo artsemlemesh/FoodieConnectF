@@ -11,8 +11,19 @@ import store from './store/store.js';
 import { AppProvider } from './context/GlobalContext.jsx';
 import { setupAxiosInterceptors } from './utils/axiosClient.jsx';
 import * as Sentry from '@sentry/react';
+import { ApolloProvider } from '@apollo/client';
+import client from './utils/apolloClient.jsx'
 
-const queryClient = new QueryClient();
+
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1, // Retry failed requests once before showing an error
+      refetchOnWindowFocus: false, // Disable refetching when the window regains focus
+    },
+  },
+});
 //	•	Provides the QueryClient instance to all components in the tree, enabling them to use React Query hooks like useQuery or useMutation.
 
 setupAxiosInterceptors(store.dispatch);
@@ -32,12 +43,15 @@ const root = createRoot(container, {
 
 root.render(
   // <StrictMode>
-  <QueryClientProvider client={queryClient}>
-    <Provider store={store}>
-      <AppProvider>
-        <App />
-      </AppProvider>
-    </Provider>
-  </QueryClientProvider>
+  <ApolloProvider client={client}>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <AppProvider>
+          <App />
+        </AppProvider>
+      </Provider>
+    </QueryClientProvider>
+  </ApolloProvider>
+
   // </StrictMode>
 );

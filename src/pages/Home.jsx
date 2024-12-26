@@ -4,6 +4,9 @@ import CuisinesFilter from '../components/withoutStories/CuisinesFilter';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../features/cartSlice';
 import { fetchProducts } from '../features/productSlice';
+import OrdersGQL from '../components/grapthQLtestComponent';
+import OrdersGQL2 from '../components/GraphQLtest2';
+import CreateRestaurantForm from '../components/GraphQLmutation';
 
 const HomePage = () => {
   const [selectedCuisine, setSelectedCuisine] = useState('All');
@@ -59,6 +62,9 @@ const HomePage = () => {
           />
         ))}
 
+
+
+
         {/* this is for sentry to trigger the error and check in console */}
         <button
           type="button"
@@ -68,6 +74,14 @@ const HomePage = () => {
         >
           Break the world
         </button>
+
+
+
+
+        {/* test components, later delete */}
+        <OrdersGQL/>
+        <OrdersGQL2/>
+        <CreateRestaurantForm/>
         
       </div>
     </div>
