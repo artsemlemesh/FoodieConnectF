@@ -26,6 +26,8 @@ const CreateRestaurantForm = () => {
     }
   );
 
+//   add if user isnt logged in, (it throws an error about id)
+
   const handleSubmit = (e) => {
     e.preventDefault();
     createRestaurant({

@@ -17,6 +17,8 @@ import OrderFood from './pages/OrderFood';
 import RestaurantList from './pages/RestaurantsList';
 import ManageRestaurants from './components/AdminPanel/RestaurantList';
 import ManageProducts from './components/AdminPanel/ProductList';
+import CancelPage from './components/withoutStories/CancelPage';
+import SuccessPage from './components/withoutStories/SuccessPage';
 
 
 function App() {
@@ -30,8 +32,8 @@ function App() {
           <Route path="contact" element={<Contact />} />
           <Route path="order-food" element={<OrderFood />} />
           <Route path="cart" element={<CartPage />} />
-          {/* <Route path="success" element={<SuccessPage />} />
-          <Route path="cancel" element={<CancelPage />} /> */}
+          <Route path="success" element={<SuccessPage />} />
+          <Route path="cancel" element={<CancelPage />} />
           <Route path="payment" element={<PaymentWrapper />} />
           <Route path="orders/:orderId/track" element={<LiveOrderStatus />} />
           <Route path="restaurants" element={<RestaurantList />} />
