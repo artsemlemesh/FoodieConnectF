@@ -2,6 +2,7 @@ import React from 'react';
 
 // FoodItem Component
 // FoodItem Component
+const FoodItem = ({ index }) => (
   <div className="border rounded-lg shadow hover:shadow-lg transition transform hover:scale-105">
     <img
       // src={`https://source.unsplash.com/400x300/?food&sig=${index}`}
