@@ -15,7 +15,7 @@ const HomePage = () => {
 
   const products = useSelector((state) => state.product.items);
   const cuisines = products.map((product) => product.category);
-
+  // console.log('PRODucts', products)
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);

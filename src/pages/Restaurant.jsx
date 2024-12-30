@@ -31,15 +31,24 @@ const RestaurantDetailsPage = () => {
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">{restaurant.name}</h1>
-      <p>{restaurant.description}</p>
+    <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6 space-y-8">
+      {/* Restaurant Header */}
+      <div className="border-b pb-6">
+        <h1 className="text-4xl font-bold text-gray-800">{restaurant.name}</h1>
+        <p className="text-gray-600 mt-4">{restaurant.description}</p>
+      </div>
 
       {/* Review Form */}
-      <ReviewForm restaurantId={id} onAddReview={handleAddReview} /> 
+      <div className="border-b pb-6">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Leave a Review</h2>
+        <ReviewForm restaurantId={id} onAddReview={handleAddReview} />
+      </div>
 
       {/* Review List */}
-      <ReviewsList restaurantId={id} />
+      <div>
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Customer Reviews</h2>
+        <ReviewsList restaurantId={id} />
+      </div>
     </div>
   );
 };

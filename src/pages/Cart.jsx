@@ -18,8 +18,28 @@ const CartPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const cart = useSelector((state) => state.cart.items);
-  console.log('cart:', cart);
+  // const status = useSelector((state) => state.cart);
+  // console.log('status', status)
+  // const cart = useSelector((state) => state.cart.items);
+  // console.log('cart:', cart);
+
+  const { items: cart, status, error } = useSelector((state) => state.cart);
+
+
+  // Display loading state
+  if (status === 'loading') {
+    return <p>Loading cart...</p>;
+  }
+
+  // Display error state
+  if (status === 'failed') {
+    return <p>Error loading cart: {error}</p>;
+  }
+
+  // Display empty cart message
+  if (status === 'succeeded' && cart.length === 0) {
+    return <p>Your cart is empty.</p>;
+  }
 
   const handleQuantityChange = (productId, newQuantity) => {
     if (newQuantity > 0) {
@@ -52,23 +72,21 @@ const CartPage = () => {
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
-      {cart.length === 0 ? (
-        <p>Your cart is empty.</p>
-      ) : (
+      
         <div className="space-y-4">
           {cart.map((item) => (
             <div
-              key={item.id}
+              key={`${item.id}-${item.product}`}
               className="flex items-center space-x-4 border-b pb-4"
             >
               <img
-                src={item.product.photo}
-                alt={item.product.name}
+                src={item.product?.photo || 'default-image-url.jpg'}
+                alt={item.product?.name || 'Unknown Product'}
                 className="w-16 h-16 object-cover"
               />
               <div className="flex-1">
-                <h3 className="text-lg font-semibold">{item.product.name}</h3>
-                <div className="text-gray-600">${item.product.price} each</div>
+                <h3 className="text-lg font-semibold">{item.product?.name || 'Unknown Product'}</h3>
+                <div className="text-gray-600">${item.product?.price || '0.00'} each</div>
               </div>
               <div className="flex items-center space-x-2">
                 <button
@@ -89,7 +107,7 @@ const CartPage = () => {
                   +
                 </button>
               </div>
-              <div>${item.total_price.toFixed(2)}</div>
+              <div>${item.total_price}</div>
               <button
                 className="ml-4 text-red-600 hover:underline"
                 onClick={() => handleRemove(item.product.id)}
@@ -99,7 +117,7 @@ const CartPage = () => {
             </div>
           ))}
           <div className="mt-4 text-right text-xl font-bold">
-            Total: ${cartTotal.toFixed(2)}
+            Total: ${cartTotal.toFixed(2) || '0.00'}
           </div>
           <button
             onClick={handleCheckout}
@@ -108,7 +126,7 @@ const CartPage = () => {
             Place Order
           </button>
         </div>
-      )}
+      
       
       {orderId && <LiveOrderStatus orderId={orderId} />} 
       <PurchaseHistory />

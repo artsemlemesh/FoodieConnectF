@@ -5,7 +5,6 @@ import { axiosClient } from '../utils/axiosClient';
 // Base API URL
 const apiUrl = 'http://127.0.0.1:8000';
 
-
 const initialState = {
   items: [],
   status: 'idle',
@@ -80,7 +79,6 @@ export const removeFromCart = createAsyncThunk(
     }
   }
 );
-
 
 export const checkoutCart = createAsyncThunk(
   'cart/checkoutCart',
@@ -174,7 +172,6 @@ const cartSlice = createSlice({
         state.status = 'failed';
         state.error = action.payload || action.error.message;
       });
-
   },
 });
 
