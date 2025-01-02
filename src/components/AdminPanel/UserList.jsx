@@ -54,13 +54,31 @@ const ManageUsers = () => {
   //   dispatch(deleteUser(userId)); // Call delete action to remove the user
   // };
 
+  const handleDelete = async (userId) => {
+    // const confirmation = window.confirm(
+    //   'Are you sure you want to delete this restaurant? This action cannot be undone.'
+    // );
+    // if (!confirmation) return;
+
+    try {
+      await axiosClient.delete(`/users/users/${userId}/`);
+      setAllUsers((prevUsers) =>
+        prevUsers.filter((user) => user.id !== userId)
+      );
+      // alert('Restaurant deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting restaurant:', error);
+      alert('Failed to delete restaurant. Please try again.');
+    }
+  };
+
   return (
     <div>
       <h2 className="text-2xl mb-4">Manage Users</h2>
       <TableComponent
         data={allUsers}
         columns={columns}
-        // onDelete={handleDelete}
+        onDelete={handleDelete}
       />
     </div>
   );

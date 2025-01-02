@@ -7,7 +7,7 @@ import { fetchProducts } from '../features/productSlice';
 import OrdersGQL from '../components/grapthQLtestComponent';
 import OrdersGQL2 from '../components/GraphQLtest2';
 import CreateRestaurantForm from '../components/GraphQLmutation';
-// import ChatRoom from '../components/ChatRoom/ChatRoomComponet';
+import ChatRoom from '../components/ChatRoom/ChatRoomComponet';
 
 const HomePage = () => {
   const [selectedCuisine, setSelectedCuisine] = useState('All');
@@ -83,7 +83,7 @@ const HomePage = () => {
         <OrdersGQL/>
         <OrdersGQL2/>
         <CreateRestaurantForm/>
-        {/* <ChatRoom roomId={1}/> */}
+        <ChatRoom roomId={1}/>
         
       </div>
     </div>

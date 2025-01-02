@@ -25,6 +25,24 @@ console.log('restr', restaurants)
     { field: 'created_at', header: 'Created At' },
   ];
 
+  const handleDelete = async (restaurantId) => {
+    // const confirmation = window.confirm(
+    //   'Are you sure you want to delete this restaurant? This action cannot be undone.'
+    // );
+    // if (!confirmation) return;
+
+    try {
+      await axiosClient.delete(`/reviews/restaurants/${restaurantId}/`);
+      setRestaurants((prevRestaurants) =>
+        prevRestaurants.filter((restaurant) => restaurant.id !== restaurantId)
+      );
+      // alert('Restaurant deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting restaurant:', error);
+      alert('Failed to delete restaurant. Please try again.');
+    }
+  };
+
 //   useEffect(() => {
 //     dispatch(fetchRestaurants()); // Fetch restaurants when the component mounts
 //   }, [dispatch]);
@@ -39,7 +57,7 @@ console.log('restr', restaurants)
       <TableComponent
         data={restaurants}
         columns={columns}
-        // onDelete={handleDelete}
+        onDelete={handleDelete}
       />
     </div>
   );
