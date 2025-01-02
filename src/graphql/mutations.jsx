@@ -27,3 +27,26 @@ export const CREATE_RESTAURANT = gql`
     }
   }
 `;
+
+
+export const CREATE_PRODUCT = gql`
+mutation CreateProduct(
+  $name: String!
+  $price: Decimal!
+  $description: String!
+  $category: String!
+) {
+  createProduct(
+    name: $name
+    price: $price
+    description: $description
+    category: $category
+  ) {
+    product {
+      id
+      name
+      price
+    }
+  }
+}
+`;

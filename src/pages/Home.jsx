@@ -8,6 +8,7 @@ import OrdersGQL from '../components/grapthQLtestComponent';
 import OrdersGQL2 from '../components/GraphQLtest2';
 import CreateRestaurantForm from '../components/GraphQLmutation';
 import ChatRoom from '../components/ChatRoom/ChatRoomComponet';
+import CreateProductForm from '../components/CreateProductGQL';
 
 const HomePage = () => {
   const [selectedCuisine, setSelectedCuisine] = useState('All');
@@ -83,6 +84,7 @@ const HomePage = () => {
         <OrdersGQL/>
         <OrdersGQL2/>
         <CreateRestaurantForm/>
+        <CreateProductForm/>
         <ChatRoom roomId={1}/>
         
       </div>
