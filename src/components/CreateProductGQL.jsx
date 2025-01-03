@@ -8,6 +8,7 @@ const CreateProductForm = () => {
     price: '',
     description: '',
     category: '',
+    // photo: null
   });
 
   const [createProduct, { data, loading, error }] = useMutation(CREATE_PRODUCT, {
@@ -17,20 +18,35 @@ const CreateProductForm = () => {
         price: '',
         description: '',
         category: '',
+        // photo: null
       });
     },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log('Submitting with variables:', {
+        name: formState.name,
+        price: parseFloat(formState.price),
+        description: formState.description,
+        category: formState.category,
+        // photo: formState.photo, // This should be a File object
+      });
     createProduct({
       variables: {
         name: formState.name,
         price: parseFloat(formState.price), // Ensure price is a number
         description: formState.description,
         category: formState.category,
+        // photo: formState.photo
       },
     });
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    console.log('Selected file:', file); // Log the selected file
+    setFormState({ ...formState, photo: file });
   };
 
   return (
@@ -72,6 +88,12 @@ const CreateProductForm = () => {
           }
           className="w-full p-3 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        {/* <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="w-full p-3 mb-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        /> */}
         <button
           type="submit"
           className="w-full p-3 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-200"

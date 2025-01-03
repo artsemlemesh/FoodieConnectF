@@ -30,7 +30,7 @@ export const CREATE_RESTAURANT = gql`
 
 
 export const CREATE_PRODUCT = gql`
-mutation CreateProduct(
+  mutation CreateProduct(
   $name: String!
   $price: Decimal!
   $description: String!
@@ -50,3 +50,27 @@ mutation CreateProduct(
   }
 }
 `;
+
+// export const CREATE_PRODUCT = gql`
+//   mutation CreateProduct(
+//   $name: String!
+//   $price: Decimal!
+//   $description: String!
+//   $category: String!
+//   $photo: Upload
+// ) {
+//   createProduct(
+//     name: $name
+//     price: $price
+//     description: $description
+//     category: $category
+//     photo: $photo
+//   ) {
+//     product {
+//       id
+//       name
+//       price
+//     }
+//   }
+// }
+// `;

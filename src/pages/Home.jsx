@@ -15,7 +15,7 @@ const HomePage = () => {
   const dispatch = useDispatch();
 
   const products = useSelector((state) => state.product.items);
-  const cuisines = products.map((product) => product.category);
+  const cuisines = Array.from(new Set(products.map((product) => product.category)));
   // console.log('PRODucts', products)
   useEffect(() => {
     dispatch(fetchProducts());
