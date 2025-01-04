@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CREATE_RESTAURANT } from '../graphql/mutations';
-import { useSelector } from 'react-redux';
+import { useAppContext } from '../context/GlobalContext';
 
 const CreateRestaurantForm = () => {
-  const user = useSelector((state) => state.auth.user);
+  const { user, openModal } = useAppContext();
+
   console.log('userID', user);
 
   const [formState, setFormState] = useState({
@@ -26,10 +27,13 @@ const CreateRestaurantForm = () => {
     }
   );
 
-//   add if user isnt logged in, (it throws an error about id)
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!user) {
+      openModal()
+      return;
+    }
     createRestaurant({
       variables: {
         name: formState.name,

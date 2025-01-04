@@ -20,7 +20,6 @@ import ManageProducts from './components/AdminPanel/ProductList';
 import CancelPage from './components/withoutStories/CancelPage';
 import SuccessPage from './components/withoutStories/SuccessPage';
 
-
 function App() {
   return (
     <BrowserRouter>
@@ -43,6 +42,7 @@ function App() {
 
         {/* Admin Panel Routes */}
         <Route path="/admin" element={<AdminDashboard />}>
+          <Route path="dashboard" element={<Dashboard />} />
           <Route path="users" element={<ManageUsers />} />
           <Route path="orders" element={<ManageOrders />} />
           <Route path="restaurants" element={<ManageRestaurants />} />
