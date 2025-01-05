@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { axiosClient } from '../../utils/axiosClient';
-import { AiOutlineStar, AiFillStar } from "react-icons/ai";
+import { AiOutlineStar, AiFillStar } from 'react-icons/ai';
+import { toast } from 'react-toastify';
 
 const ReviewForm = ({ restaurantId }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
 
-// when replacing it with graphQL use refetch after creating a review, so then ill be able to see new reviews when go to the approve reviews page
+  // when replacing it with graphQL use refetch after creating a review, so then ill be able to see new reviews when go to the approve reviews page
   const handleStarClick = (starValue) => {
     setRating(starValue);
   };
@@ -20,8 +21,9 @@ const ReviewForm = ({ restaurantId }) => {
         comment,
       });
 
-      alert('Review submitted! Pending approval.');
-      setComment('')
+      toast.success('Review submitted! Pending approval.');
+
+      setComment('');
     } catch (error) {
       console.error('Error submitting review:', error);
     }

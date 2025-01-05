@@ -1,6 +1,6 @@
 // Sentry initialization should be imported first!
 import './utils/instrumentSentry';
-
+import 'react-toastify/dist/ReactToastify.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './tailwind.css';

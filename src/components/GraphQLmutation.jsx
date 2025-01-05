@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CREATE_RESTAURANT } from '../graphql/mutations';
 import { useAppContext } from '../context/GlobalContext';
+import { toast } from 'react-toastify';
 
 const CreateRestaurantForm = () => {
   const { user, openModal } = useAppContext();
@@ -43,6 +44,17 @@ const CreateRestaurantForm = () => {
     });
   };
 
+  useEffect(() => {
+    if (error) {
+      toast.error(`Error: ${error.message}`);
+    }
+    if (data) {
+      toast.success(
+        `Restaurant created successfully: ${data?.createRestaurant.restaurant.name}`
+      );
+    }
+  }, [error, data]);
+
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold text-center text-gray-700 mb-4">
@@ -82,7 +94,7 @@ const CreateRestaurantForm = () => {
         </button>
       </form>
       {loading && <p className="text-center text-gray-500">Loading...</p>}
-      {error && (
+      {/* {error && (
         <p className="text-center text-red-500">Error: {error.message}</p>
       )}
       {data && (
@@ -90,7 +102,7 @@ const CreateRestaurantForm = () => {
           Restaurant created successfully:{' '}
           {data.createRestaurant.restaurant.name}
         </p>
-      )}
+      )} */}
     </div>
   );
 };

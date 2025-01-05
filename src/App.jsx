@@ -21,10 +21,13 @@ import CancelPage from './components/withoutStories/CancelPage';
 import SuccessPage from './components/withoutStories/SuccessPage';
 import CreateRestaurantForm from './components/GraphQLmutation';
 import CreateProductForm from './components/CreateProductGQL';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
     <BrowserRouter>
+      <ToastContainer position="top-right" autoClose={3000} /> 
+
       <Routes>
         {/* Main Routes */}
         <Route path="/" element={<MainLayout />}>

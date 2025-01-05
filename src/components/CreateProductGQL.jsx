@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CREATE_PRODUCT } from '../graphql/mutations';
+import { toast } from 'react-toastify';
 
 const CreateProductForm = () => {
   const [formState, setFormState] = useState({
@@ -11,27 +12,30 @@ const CreateProductForm = () => {
     // photo: null
   });
 
-  const [createProduct, { data, loading, error }] = useMutation(CREATE_PRODUCT, {
-    onCompleted: () => {
-      setFormState({
-        name: '',
-        price: '',
-        description: '',
-        category: '',
-        // photo: null
-      });
-    },
-  });
+  const [createProduct, { data, loading, error }] = useMutation(
+    CREATE_PRODUCT,
+    {
+      onCompleted: () => {
+        setFormState({
+          name: '',
+          price: '',
+          description: '',
+          category: '',
+          // photo: null
+        });
+      },
+    }
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Submitting with variables:', {
-        name: formState.name,
-        price: parseFloat(formState.price),
-        description: formState.description,
-        category: formState.category,
-        // photo: formState.photo, // This should be a File object
-      });
+      name: formState.name,
+      price: parseFloat(formState.price),
+      description: formState.description,
+      category: formState.category,
+      // photo: formState.photo, // This should be a File object
+    });
     createProduct({
       variables: {
         name: formState.name,
@@ -48,6 +52,18 @@ const CreateProductForm = () => {
     console.log('Selected file:', file); // Log the selected file
     setFormState({ ...formState, photo: file });
   };
+
+  //to show after the component's render phase, useEffect fires after, otherwise error
+  useEffect(() => {
+    if (error) {
+      toast.error(`Error: ${error.message}`);
+    }
+    if (data) {
+      toast.success(
+        `Product created successfully: ${data.createProduct.product.name}`
+      );
+    }
+  }, [error, data]);
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
@@ -102,12 +118,12 @@ const CreateProductForm = () => {
         </button>
       </form>
       {loading && <p className="text-center text-gray-500">Loading...</p>}
-      {error && <p className="text-center text-red-500">Error: {error.message}</p>}
+      {/* {error && <p className="text-center text-red-500">Error: {error.message}</p>}
       {data && (
         <p className="text-center text-green-500">
           Product created successfully: {data.createProduct.product.name}
         </p>
-      )}
+      )} */}
     </div>
   );
 };

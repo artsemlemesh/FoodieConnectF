@@ -7,6 +7,8 @@ import { fetchProducts } from '../features/productSlice';
 import OrdersGQL from '../components/grapthQLtestComponent';
 import OrdersGQL2 from '../components/GraphQLtest2';
 import ChatRoom from '../components/ChatRoom/ChatRoomComponet';
+import { toast } from 'react-toastify';
+
 
 const HomePage = () => {
   const [selectedCuisine, setSelectedCuisine] = useState('All');
@@ -35,7 +37,7 @@ const HomePage = () => {
     dispatch(addToCart(cartItem))
       .unwrap()
       .then((response) => {
-        alert(`${product.name} has been added to the cart!`);
+        toast.success(`${product.name} has been added to the cart!`);
       })
       .catch((error) => {
         console.error('Error adding to cart:', error);
