@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAppContext } from '../context/GlobalContext';
 import useAuthAndFetchCart from '../hooks/useAuthAndFetchCart';
 import Header from '../components/Header';
+import PendingReviews from '../components/AdminPanel/ApproveReview';
 
 const AdminDashboard = () => {
   const { user } = useAppContext();
@@ -32,47 +33,91 @@ const AdminDashboard = () => {
               Navigation
             </h2>
             <ul className="space-y-4">
-              <li>
-                <Link
-                  to="/admin/dashboard"
-                  className="text-blue-600 hover:underline"
-                >
-                  Statistics
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/admin/users"
-                  className="text-blue-600 hover:underline"
-                >
-                  Users
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/admin/orders"
-                  className="text-blue-600 hover:underline"
-                >
-                  Orders
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/admin/restaurants"
-                  className="text-blue-600 hover:underline"
-                >
-                  Restaurants
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/admin/products"
-                  className="text-blue-600 hover:underline"
-                >
-                  Products
-                </Link>
-              </li>
-            </ul>
+  <li>
+    <NavLink
+      to="/admin/dashboard"
+      className={({ isActive }) =>
+        isActive
+          ? "text-blue-800 font-semibold border-b-2 border-blue-800"
+          : "text-blue-600 hover:underline"
+      }
+    >
+      Statistics
+    </NavLink>
+  </li>
+  <li>
+    <NavLink
+      to="/admin/users"
+      className={({ isActive }) =>
+        isActive
+          ? "text-blue-800 font-semibold border-b-2 border-blue-800"
+          : "text-blue-600 hover:underline"
+      }
+    >
+      Users
+    </NavLink>
+  </li>
+  <li>
+    <NavLink
+      to="/admin/orders"
+      className={({ isActive }) =>
+        isActive
+          ? "text-blue-800 font-semibold border-b-2 border-blue-800"
+          : "text-blue-600 hover:underline"
+      }
+    >
+      Orders
+    </NavLink>
+  </li>
+  <li>
+    <NavLink
+      to="/admin/restaurants"
+      className={({ isActive }) =>
+        isActive
+          ? "text-blue-800 font-semibold border-b-2 border-blue-800"
+          : "text-blue-600 hover:underline"
+      }
+    >
+      Restaurants
+    </NavLink>
+  </li>
+  <li>
+    <NavLink
+      to="/admin/products"
+      className={({ isActive }) =>
+        isActive
+          ? "text-blue-800 font-semibold border-b-2 border-blue-800"
+          : "text-blue-600 hover:underline"
+      }
+    >
+      Products
+    </NavLink>
+  </li>
+  <li>
+    <NavLink
+      to="/admin/create-restaurant"
+      className={({ isActive }) =>
+        isActive
+          ? "text-blue-800 font-semibold border-b-2 border-blue-800"
+          : "text-blue-600 hover:underline"
+      }
+    >
+      Create Restaurant
+    </NavLink>
+  </li>
+  <li>
+    <NavLink
+      to="/admin/create-product"
+      className={({ isActive }) =>
+        isActive
+          ? "text-blue-800 font-semibold border-b-2 border-blue-800"
+          : "text-blue-600 hover:underline"
+      }
+    >
+      Create Product
+    </NavLink>
+  </li>
+</ul>
           </nav>
 
           {/* Main Content Area */}
@@ -80,6 +125,7 @@ const AdminDashboard = () => {
             <Outlet />
           </div>
         </div>
+        <PendingReviews />
       </div>
     </div>
   );

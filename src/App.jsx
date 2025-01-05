@@ -19,6 +19,8 @@ import ManageRestaurants from './components/AdminPanel/RestaurantList';
 import ManageProducts from './components/AdminPanel/ProductList';
 import CancelPage from './components/withoutStories/CancelPage';
 import SuccessPage from './components/withoutStories/SuccessPage';
+import CreateRestaurantForm from './components/GraphQLmutation';
+import CreateProductForm from './components/CreateProductGQL';
 
 function App() {
   return (
@@ -47,6 +49,8 @@ function App() {
           <Route path="orders" element={<ManageOrders />} />
           <Route path="restaurants" element={<ManageRestaurants />} />
           <Route path="products" element={<ManageProducts />} />
+          <Route path="create-restaurant" element={<CreateRestaurantForm />} />
+          <Route path="create-product" element={<CreateProductForm />} />
         </Route>
       </Routes>
     </BrowserRouter>

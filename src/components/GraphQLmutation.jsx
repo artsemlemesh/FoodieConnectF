@@ -27,11 +27,10 @@ const CreateRestaurantForm = () => {
     }
   );
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!user) {
-      openModal()
+      openModal();
       return;
     }
     createRestaurant({
@@ -46,7 +45,9 @@ const CreateRestaurantForm = () => {
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold text-center text-gray-700 mb-4">Create a New Restaurant</h2>
+      <h2 className="text-2xl font-semibold text-center text-gray-700 mb-4">
+        Create a New Restaurant
+      </h2>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -81,10 +82,13 @@ const CreateRestaurantForm = () => {
         </button>
       </form>
       {loading && <p className="text-center text-gray-500">Loading...</p>}
-      {error && <p className="text-center text-red-500">Error: {error.message}</p>}
+      {error && (
+        <p className="text-center text-red-500">Error: {error.message}</p>
+      )}
       {data && (
         <p className="text-center text-green-500">
-          Restaurant created successfully: {data.createRestaurant.restaurant.name}
+          Restaurant created successfully:{' '}
+          {data.createRestaurant.restaurant.name}
         </p>
       )}
     </div>

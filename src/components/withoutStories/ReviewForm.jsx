@@ -6,7 +6,7 @@ const ReviewForm = ({ restaurantId }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
 
-
+// when replacing it with graphQL use refetch after creating a review, so then ill be able to see new reviews when go to the approve reviews page
   const handleStarClick = (starValue) => {
     setRating(starValue);
   };

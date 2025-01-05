@@ -39,3 +39,20 @@ export const GET_DATA = gql`
     }
   }
 `;
+
+export const GET_REVIEWS = gql`
+  query GetReviews{
+    pendingReviews {
+      id
+      user {
+        username
+      }
+      restaurant {
+        name
+      }
+      rating
+      comment
+      isApproved
+    }
+  }
+`;

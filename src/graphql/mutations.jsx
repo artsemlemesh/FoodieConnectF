@@ -29,6 +29,21 @@ export const CREATE_RESTAURANT = gql`
 `;
 
 
+export const APPROVE_REVIEW = gql`
+  mutation ApproveReview($review_id: ID!) {
+    approveReview(reviewId: $review_id) {
+      success
+      message
+      review {
+        id
+        isApproved
+      }
+    }
+  }
+`;
+
+
+
 export const CREATE_PRODUCT = gql`
   mutation CreateProduct(
   $name: String!

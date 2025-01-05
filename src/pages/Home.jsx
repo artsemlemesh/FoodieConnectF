@@ -6,9 +6,7 @@ import { addToCart } from '../features/cartSlice';
 import { fetchProducts } from '../features/productSlice';
 import OrdersGQL from '../components/grapthQLtestComponent';
 import OrdersGQL2 from '../components/GraphQLtest2';
-import CreateRestaurantForm from '../components/GraphQLmutation';
 import ChatRoom from '../components/ChatRoom/ChatRoomComponet';
-import CreateProductForm from '../components/CreateProductGQL';
 
 const HomePage = () => {
   const [selectedCuisine, setSelectedCuisine] = useState('All');
@@ -16,7 +14,6 @@ const HomePage = () => {
 
   const products = useSelector((state) => state.product.items);
   const cuisines = Array.from(new Set(products.map((product) => product.category)));
-  // console.log('PRODucts', products)
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
@@ -39,7 +36,6 @@ const HomePage = () => {
       .unwrap()
       .then((response) => {
         alert(`${product.name} has been added to the cart!`);
-        // console.log('Cart updated:', response);
       })
       .catch((error) => {
         console.error('Error adding to cart:', error);
@@ -83,8 +79,7 @@ const HomePage = () => {
         {/* test components, later delete */}
         <OrdersGQL/>
         <OrdersGQL2/>
-        <CreateRestaurantForm/>
-        <CreateProductForm/>
+        
         <ChatRoom roomId={1}/>
         
       </div>
