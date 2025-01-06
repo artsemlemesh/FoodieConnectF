@@ -33,91 +33,91 @@ const AdminDashboard = () => {
               Navigation
             </h2>
             <ul className="space-y-4">
-  <li>
-    <NavLink
-      to="/admin/dashboard"
-      className={({ isActive }) =>
-        isActive
-          ? "text-blue-800 font-semibold border-b-2 border-blue-800"
-          : "text-blue-600 hover:underline"
-      }
-    >
-      Statistics
-    </NavLink>
-  </li>
-  <li>
-    <NavLink
-      to="/admin/users"
-      className={({ isActive }) =>
-        isActive
-          ? "text-blue-800 font-semibold border-b-2 border-blue-800"
-          : "text-blue-600 hover:underline"
-      }
-    >
-      Users
-    </NavLink>
-  </li>
-  <li>
-    <NavLink
-      to="/admin/orders"
-      className={({ isActive }) =>
-        isActive
-          ? "text-blue-800 font-semibold border-b-2 border-blue-800"
-          : "text-blue-600 hover:underline"
-      }
-    >
-      Orders
-    </NavLink>
-  </li>
-  <li>
-    <NavLink
-      to="/admin/restaurants"
-      className={({ isActive }) =>
-        isActive
-          ? "text-blue-800 font-semibold border-b-2 border-blue-800"
-          : "text-blue-600 hover:underline"
-      }
-    >
-      Restaurants
-    </NavLink>
-  </li>
-  <li>
-    <NavLink
-      to="/admin/products"
-      className={({ isActive }) =>
-        isActive
-          ? "text-blue-800 font-semibold border-b-2 border-blue-800"
-          : "text-blue-600 hover:underline"
-      }
-    >
-      Products
-    </NavLink>
-  </li>
-  <li>
-    <NavLink
-      to="/admin/create-restaurant"
-      className={({ isActive }) =>
-        isActive
-          ? "text-blue-800 font-semibold border-b-2 border-blue-800"
-          : "text-blue-600 hover:underline"
-      }
-    >
-      Create Restaurant
-    </NavLink>
-  </li>
-  <li>
-    <NavLink
-      to="/admin/create-product"
-      className={({ isActive }) =>
-        isActive
-          ? "text-blue-800 font-semibold border-b-2 border-blue-800"
-          : "text-blue-600 hover:underline"
-      }
-    >
-      Create Product
-    </NavLink>
-  </li>
-</ul>
+              <li>
+                <NavLink
+                  to="/admin/dashboard"
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'text-blue-800 font-semibold border-b-2 border-blue-800'
+                      : 'text-blue-600 hover:underline'
+                  }
+                >
+                  Statistics
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/admin/users"
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'text-blue-800 font-semibold border-b-2 border-blue-800'
+                      : 'text-blue-600 hover:underline'
+                  }
+                >
+                  Users
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/admin/orders"
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'text-blue-800 font-semibold border-b-2 border-blue-800'
+                      : 'text-blue-600 hover:underline'
+                  }
+                >
+                  Orders
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/admin/restaurants"
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'text-blue-800 font-semibold border-b-2 border-blue-800'
+                      : 'text-blue-600 hover:underline'
+                  }
+                >
+                  Restaurants
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/admin/products"
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'text-blue-800 font-semibold border-b-2 border-blue-800'
+                      : 'text-blue-600 hover:underline'
+                  }
+                >
+                  Products
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/admin/create-restaurant"
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'text-blue-800 font-semibold border-b-2 border-blue-800'
+                      : 'text-blue-600 hover:underline'
+                  }
+                >
+                  Create Restaurant
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/admin/create-product"
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'text-blue-800 font-semibold border-b-2 border-blue-800'
+                      : 'text-blue-600 hover:underline'
+                  }
+                >
+                  Create Product
+                </NavLink>
+              </li>
+            </ul>
           </nav>
 
           {/* Main Content Area */}

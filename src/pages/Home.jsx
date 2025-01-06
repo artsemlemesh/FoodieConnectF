@@ -8,11 +8,13 @@ import OrdersGQL from '../components/grapthQLtestComponent';
 import OrdersGQL2 from '../components/GraphQLtest2';
 import ChatRoom from '../components/ChatRoom/ChatRoomComponet';
 import { toast } from 'react-toastify';
+import { useAppContext } from '../context/GlobalContext';
 
 
 const HomePage = () => {
   const [selectedCuisine, setSelectedCuisine] = useState('All');
   const dispatch = useDispatch();
+  const { user, openModal } = useAppContext();
 
   const products = useSelector((state) => state.product.items);
   const cuisines = Array.from(new Set(products.map((product) => product.category)));
@@ -30,6 +32,10 @@ const HomePage = () => {
       : products.filter((product) => product.category === selectedCuisine);
 
   const handleAddToCart = (product) => {
+    if (!user) {
+      openModal();
+      return;
+    }
     const cartItem = {
       product_id: product.id,
       quantity: 1, // Default quantity
@@ -41,7 +47,7 @@ const HomePage = () => {
       })
       .catch((error) => {
         console.error('Error adding to cart:', error);
-        alert('Failed to add item to cart. Please try again.');
+        toast.error('Failed to add item to cart. Please try again.');
       });
   };
 
