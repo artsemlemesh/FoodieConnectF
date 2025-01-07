@@ -1,9 +1,15 @@
 import React from 'react';
 
-const CuisinesFilter = ({ cuisines, selectedCuisine, onFilterChange }) => {
+const CuisinesFilter = ({ cuisines, selectedCuisine, onFilterChange, onResetFilters }) => {
   return (
     <div className="overflow-x-auto">
       <div className="flex space-x-4 mb-6">
+      <button
+          className="px-4  rounded-md bg-gray-400 text-gray-800 hover:bg-gray-300"
+          onClick={onResetFilters}
+        >
+          All
+        </button>
         {cuisines.map((cuisine) => (
           <button
             key={cuisine}
@@ -17,6 +23,7 @@ const CuisinesFilter = ({ cuisines, selectedCuisine, onFilterChange }) => {
             {cuisine}
           </button>
         ))}
+        
       </div>
     </div>
   );
