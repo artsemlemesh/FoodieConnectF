@@ -11,6 +11,8 @@ import { debounce } from 'lodash';
 import { useAppContext } from '../context/GlobalContext';
 import { useCallback } from 'react';
 import { FaSearch } from 'react-icons/fa'; // Import search icon
+import { useQuery } from '@apollo/client';
+import { GET_PRODUCTS } from '../graphql/queries';
 
 const HomePage = () => {
   const [selectedCuisine, setSelectedCuisine] = useState('All');
@@ -21,7 +23,12 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const { user, openModal } = useAppContext();
 
-  const products = useSelector((state) => state.product.items);
+      const {data} = useQuery(GET_PRODUCTS)
+    console.log('GRAPHQLPROD', data?.allProducts)
+
+    const products = data?.allProducts || []
+
+  // const products = useSelector((state) => state.product.items);
   const cuisines = Array.from(new Set(products.map((product) => product.category)));
 
   const [cardDimensions, setCardDimensions] = useState({

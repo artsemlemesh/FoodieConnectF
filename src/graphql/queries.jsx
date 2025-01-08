@@ -39,6 +39,18 @@ export const GET_DATA = gql`
     }
   }
 `;
+export const GET_PRODUCTS = gql`
+  query GetProducts {
+    allProducts {
+      id
+      name
+      price
+      description
+      photo
+      category 
+    }
+  }
+`;
 
 export const GET_REVIEWS = gql`
   query GetReviews{
