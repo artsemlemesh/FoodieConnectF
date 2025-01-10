@@ -39,18 +39,47 @@ export const GET_DATA = gql`
     }
   }
 `;
+// export const GET_PRODUCTS = gql`
+//   query GetProducts {
+//     allProducts {
+//       id
+//       name
+//       price
+//       description
+//       photo
+//       category 
+//     }
+//   }
+// `;
+
+
+export const GET_CATEGORIES = gql`
+  query GetCategories {
+    allCategories
+  }
+`;
+
 export const GET_PRODUCTS = gql`
-  query GetProducts {
-    allProducts {
-      id
-      name
-      price
-      description
-      photo
-      category 
+  query GetProducts($first: Int, $after: String, $filter: ProductFilterInput) {
+    allProducts(first: $first, after: $after, filter: $filter) {
+      edges {
+        node {
+          id
+          name
+          price
+          description
+          photo
+          category
+        }
+      }
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
 `;
+
 
 export const GET_REVIEWS = gql`
   query GetReviews{
