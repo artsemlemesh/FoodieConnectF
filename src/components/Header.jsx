@@ -124,7 +124,7 @@ const Header = () => {
             <NavLink to="/contact" className="hover:underline block px-4 py-2">
               Contact
             </NavLink>
-            <NavLink to="/restaurants" className="hover:underline">
+            <NavLink to="/restaurants" className="hover:underline block px-4 py-2">
               Restaurants
             </NavLink>
             <NavLink to="/cart" className="hover:underline block px-4 py-2">
