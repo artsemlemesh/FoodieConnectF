@@ -15,22 +15,24 @@ const FilterBar = ({ onCategoryChange }) => {
   if (error) return <div>Error loading categories: {error.message}</div>;
 
   return (
-    <div className="flex space-x-4 mb-4">
-      <button
-        onClick={() => handleCategoryClick('')}
-        className={`py-2 px-4 rounded ${!selectedCategory ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-      >
-        All
-      </button>
-      {data.allCategories.map((category) => (
+    <div className="overflow-x-auto">
+      <div className="flex space-x-4 mb-4">
         <button
-          key={category}
-          onClick={() => handleCategoryClick(category)}
-          className={`py-2 px-4 rounded ${selectedCategory === category ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          onClick={() => handleCategoryClick('')}
+          className={`py-2 px-4 rounded ${!selectedCategory ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
         >
-          {category}
+          All
         </button>
-      ))}
+        {data.allCategories.map((category) => (
+          <button
+            key={category}
+            onClick={() => handleCategoryClick(category)}
+            className={`py-2 px-4 rounded ${selectedCategory === category ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

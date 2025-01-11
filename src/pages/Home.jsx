@@ -1,50 +1,69 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import ProductCard from '../components/withoutStories/ProductCard';
-import CuisinesFilter from '../components/withoutStories/CuisinesFilter';
 import { addToCart } from '../features/cartSlice';
-import { fetchProducts } from '../features/productSlice';
 import { FixedSizeGrid as Grid } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 import { toast } from 'react-toastify';
 import { debounce } from 'lodash';
 import { useAppContext } from '../context/GlobalContext';
 import { useCallback } from 'react';
-import { FaSearch } from 'react-icons/fa'; // Import search icon
+import { FaSearch } from 'react-icons/fa';
 import { useQuery } from '@apollo/client';
 import { GET_PRODUCTS } from '../graphql/queries';
+import FilterBar from '../components/filterBar';
 
 const HomePage = () => {
-  const [selectedCuisine, setSelectedCuisine] = useState('All');
+  const dispatch = useDispatch();
+
+  const containerRef = useRef(null);
+
+  const { user, openModal } = useAppContext();
+
   const [searchTerm, setSearchTerm] = useState(''); // Live search term
   const [columnCount, setColumnCount] = useState(4);
   const [gridWidth, setGridWidth] = useState(window.innerWidth);
-  const containerRef = useRef(null);
-  const dispatch = useDispatch();
-  const { user, openModal } = useAppContext();
-
-      const {data} = useQuery(GET_PRODUCTS)
-    console.log('GRAPHQLPROD', data?.allProducts)
-
-    const products = data?.allProducts || []
-
-  // const products = useSelector((state) => state.product.items);
-  const cuisines = Array.from(new Set(products.map((product) => product.category)));
+  const [filters, setFilters] = useState({}); // Store filter inputs here
+  const [products, setProducts] = useState([]); // Accumulated products
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [pageInfo, setPageInfo] = useState({
+    endCursor: null,
+    hasNextPage: true,
+  });
+  const { loading, error, data, fetchMore, refetch } = useQuery(GET_PRODUCTS, {
+    variables: { first: 10, after: null, filter: filters },
+    fetchPolicy: 'cache-and-network',
+  });
 
   const [cardDimensions, setCardDimensions] = useState({
     width: 270,
   });
 
+  // Update filtered products whenever `searchTerm` or `products` changes
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    const filtered = products.filter((product) =>
+      product.name.toLowerCase().includes(lowerCaseSearchTerm)
+    );
+    setFilteredProducts(filtered);
+  }, [searchTerm, products]);
+
+  useEffect(() => {
+    if (data) {
+      setProducts(data.allProducts.edges.map((edge) => edge.node));
+      setPageInfo(data.allProducts.pageInfo);
+    }
+  }, [data]);
 
   useEffect(() => {
     const updateGridDimensions = debounce(() => {
       if (containerRef.current) {
         const containerWidth = containerRef.current.offsetWidth;
         const minCardWidth = 270;
-        const newColumnCount = Math.max(Math.floor(containerWidth / minCardWidth), 1);
+        const newColumnCount = Math.max(
+          Math.floor(containerWidth / minCardWidth),
+          1
+        );
         const adjustedCardWidth = containerWidth / newColumnCount;
 
         setColumnCount(newColumnCount);
@@ -62,19 +81,10 @@ const HomePage = () => {
     };
   }, []);
 
-  const handleFilterChange = (cuisine) => {
-    setSelectedCuisine(cuisine);
-  };
-
   const handleSearchChange = debounce((e) => {
     setSearchTerm(e.target.value.toLowerCase());
+    // window.scrollTo({ top: 0, behavior: 'smooth' }) // implement smooth scroll, while searching the window doesnt go up
   }, 300);
-
-  const filteredProducts = products.filter((product) => {
-    const matchesCuisine = selectedCuisine === 'All' || product.category === selectedCuisine;
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm);
-    return matchesCuisine && matchesSearch;
-  });
 
   const handleAddToCart = useCallback(
     (product) => {
@@ -98,12 +108,38 @@ const HomePage = () => {
     [user, openModal, dispatch]
   );
 
-  const rowCount = Math.ceil(filteredProducts.length / columnCount);
+  const rowCount = Math.ceil(products.length / columnCount);
 
-  const isItemLoaded = (index) => index < filteredProducts.length;
-
+  const isItemLoaded = useCallback(
+    (index) => index < products.length,
+    [products.length]
+  );
   const loadMoreItems = () => {
-    console.log('Loading more items...');
+    if (!pageInfo.hasNextPage) return;
+    fetchMore({
+      variables: {
+        first: 10,
+        after: pageInfo.endCursor,
+        filter: filters,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev;
+        const newEdges = fetchMoreResult.allProducts.edges;
+        return {
+          allProducts: {
+            ...fetchMoreResult.allProducts,
+            edges: [...prev.allProducts.edges, ...newEdges],
+          },
+        };
+      },
+    });
+  };
+
+  const handleCategoryChange = (category) => {
+    const newFilters = category ? { category } : {};
+    setFilters(newFilters); // Update filter state
+    refetch({ first: 10, after: null, filter: newFilters }); // Reset pagination and refetch
+    setProducts([]);
   };
 
   const Cell = ({ columnIndex, rowIndex, style }) => {
@@ -113,17 +149,23 @@ const HomePage = () => {
     const product = filteredProducts[productIndex];
 
     return (
-      <div style={{ ...style, padding: '8px' }} className="p-2 flex justify-center items-center">
+      <div
+        style={{ ...style, padding: '8px' }}
+        className="p-2 flex justify-center items-center"
+      >
         <ProductCard product={product} onAddToCart={handleAddToCart} />
       </div>
     );
   };
 
+  if (loading && products.length === 0) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-3xl font-bold">Cuisines</h1>
-        
+
         <div className="relative flex items-center space-x-2">
           <FaSearch className="text-gray-500" />
           <input
@@ -135,24 +177,19 @@ const HomePage = () => {
         </div>
       </div>
 
-      <CuisinesFilter
-        cuisines={cuisines}
-        selectedCuisine={selectedCuisine}
-        onFilterChange={handleFilterChange}
-        onResetFilters={() => {
-          setSelectedCuisine('All');
-          setSearchTerm('');
-        }}
-      />
+      <FilterBar onCategoryChange={handleCategoryChange} />
 
-      <div ref={containerRef} className="relative h-[600px] w-full rounded-lg overflow-hidden shadow-lg bg-white">
+      <div
+        ref={containerRef}
+        className="relative h-[600px] w-full rounded-lg overflow-hidden shadow-lg bg-white"
+      >
         <div className="absolute top-0 left-0 w-full h-8 bg-gradient-to-b from-white to-transparent pointer-events-none z-10"></div>
         <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-white to-transparent pointer-events-none z-10"></div>
 
         <div className="h-full w-full overflow-auto scroll-smooth scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
           <InfiniteLoader
             isItemLoaded={isItemLoaded}
-            itemCount={rowCount * columnCount}
+            itemCount={products.length + (pageInfo.hasNextPage ? 10 : 0)} // Add buffer for un-loaded items, fixed infinite scroll
             loadMoreItems={loadMoreItems}
           >
             {({ onItemsRendered, ref }) => (
@@ -165,7 +202,8 @@ const HomePage = () => {
                 width={gridWidth}
                 style={{ willChange: 'transform' }}
                 onItemsRendered={(gridProps) => {
-                  const { visibleRowStartIndex, visibleRowStopIndex } = gridProps;
+                  const { visibleRowStartIndex, visibleRowStopIndex } =
+                    gridProps;
                   onItemsRendered({
                     overscanStartIndex: visibleRowStartIndex * columnCount,
                     overscanStopIndex: visibleRowStopIndex * columnCount,

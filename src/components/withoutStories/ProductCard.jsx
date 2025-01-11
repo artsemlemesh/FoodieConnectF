@@ -4,14 +4,12 @@ const ProductCard = memo(({ product, onAddToCart }) => {
   const { name, price, description, photo } = product;
 
   return (
-    
     <div className="border rounded-lg shadow hover:shadow-lg transition transform hover:scale-105 flex flex-col h-80">
       {/* Fixed height ensures consistent card size */}
       <img
         src={photo}
         alt={name}
         loading="lazy"
-
         className="w-full h-40 object-cover rounded-t-lg"
       />
       <div className="flex flex-col flex-grow p-4">
@@ -34,6 +32,6 @@ const ProductCard = memo(({ product, onAddToCart }) => {
       </div>
     </div>
   );
-})
+});
 
 export default ProductCard;
