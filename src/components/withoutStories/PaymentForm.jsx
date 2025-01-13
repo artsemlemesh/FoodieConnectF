@@ -57,10 +57,15 @@ const PaymentForm = ({ clientSecret, cartTotal }) => {
 
       if (paymentIntent && paymentIntent.status === 'succeeded') {
         // Confirm payment on the backend
+        // try {
+          // console.log('Order ID being sent:', state.orderId);
         const response = await axiosClient.post('/cart/payment/confirm/', {
           order_id: state.orderId, // Use the context orderId
         });
-
+        console.log('ORDERID', response)
+      // } catch (err) {
+      //   console.error('Error confirming paymentt:', err );
+      // }
         // Update the context with the confirmed order ID
         setOrderId(response.data.order_id);
 

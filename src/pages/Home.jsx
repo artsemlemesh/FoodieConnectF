@@ -12,6 +12,7 @@ import { FaSearch } from 'react-icons/fa';
 import { useQuery } from '@apollo/client';
 import { GET_PRODUCTS } from '../graphql/queries';
 import FilterBar from '../components/filterBar';
+import atob from 'atob';
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -81,6 +82,13 @@ const HomePage = () => {
     };
   }, []);
 
+  //to convert relay id to numeric id (was converted for relay pagination)
+  function decodeRelayId(encodedId) {
+    const decodedString = atob(encodedId);
+    const id = decodedString.split(':').pop();
+    return parseInt(id, 10);
+  }
+
   const handleSearchChange = debounce((e) => {
     setSearchTerm(e.target.value.toLowerCase());
     // window.scrollTo({ top: 0, behavior: 'smooth' }) // implement smooth scroll, while searching the window doesnt go up
@@ -92,18 +100,22 @@ const HomePage = () => {
         openModal();
         return;
       }
+
+      const numericId = decodeRelayId(product.id);
+
       const cartItem = {
-        product_id: product.id,
+        product_id: numericId,
         quantity: 1,
       };
-      dispatch(addToCart(cartItem))
-        .unwrap()
-        .then(() => {
-          toast.success(`${product.name} has been added to the cart!`);
-        })
-        .catch((error) => {
-          toast.error('Failed to add item to cart. Please try again.');
-        });
+      console.log('CARTITEM', cartItem),
+        dispatch(addToCart(cartItem))
+          .unwrap()
+          .then(() => {
+            toast.success(`${product.name} has been added to the cart!`);
+          })
+          .catch((error) => {
+            toast.error('Failed to add item to cart. Please try again.');
+          });
     },
     [user, openModal, dispatch]
   );

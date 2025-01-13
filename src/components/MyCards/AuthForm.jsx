@@ -3,6 +3,7 @@ import { TextField, Button, Typography, Box } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../features/authSlice';
 import { useAppContext } from '../../context/GlobalContext';
+import { useDebounce } from '../../hooks/useDebounce';
 
 const AuthForm = ({ type, onSubmit }) => {
   const { authStatus, error, user } = useAppContext();
@@ -10,6 +11,8 @@ const AuthForm = ({ type, onSubmit }) => {
   const dispatch = useDispatch();
 
   const [username, setUsername] = useState('');
+  const debouncedUsername = useDebounce(username, 300); // Debounce for 300ms
+
   const [email, setEmail] = useState(''); // New state for email
 
   const [password1, setPassword1] = useState('');
@@ -19,7 +22,7 @@ const AuthForm = ({ type, onSubmit }) => {
     e.preventDefault(); // Prevent default form submission
 
     const data = {
-      username,
+      username: debouncedUsername,
       email,
       password1,
       password2,
@@ -41,7 +44,8 @@ const AuthForm = ({ type, onSubmit }) => {
 
   return (
     <>
-      {console.log('HEYUSER', user)}
+      {/* {console.log('HEYUSER', user)} */}
+      {user !== null && console.log('HEYUSER', user)}
       {user ? (
         <Box className="flex flex-col space-y-4 p-6 rounded-lg shadow-lg border max-w-md mx-auto">
           <Typography variant="h5" className="font-bold text-center">
