@@ -1,8 +1,7 @@
-// src/components/Hello.js
 import React from 'react';
 
-const Hello = ({ name }) => {
-  return <h1>Hello, {name}!</h1>;
+const Greeting = ({ message }) => {
+  return <h2>{message}</h2>;
 };
 
-export default Hello;
+export default Greeting;
