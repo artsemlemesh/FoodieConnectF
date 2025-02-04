@@ -134,3 +134,8 @@ and then:
  # docker-compose run backend python manage.py populate_db 
 
  use this command to populate db with random data
+
+
+
+ to run tests
+ # npx cypress open
