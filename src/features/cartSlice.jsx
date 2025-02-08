@@ -9,6 +9,7 @@ const initialState = {
   items: [],
   status: 'idle',
   error: null,
+  pageViewCount: null,
 };
 
 // Update a cart item's quantity
@@ -16,18 +17,17 @@ export const updateCartItem = createAsyncThunk(
   'cart/updateCartItem',
   async ({ productId, quantity }, { rejectWithValue }) => {
     try {
-      const response = await axiosClient.patch(
-        '/cart/cart/',
-        {
-          product_id: productId,
-          quantity,
-        }
-      );
+      const response = await axiosClient.patch('/cart/cart/', {
+        product_id: productId,
+        quantity,
+      });
       console.log('updateCartItem', response.data);
       return response.data; // Return the updated cart item
     } catch (error) {
       console.error('Error updating cart item:', error);
-      return rejectWithValue(error.response ? error.response.data : error.message);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
     }
   }
 );
@@ -44,7 +44,58 @@ export const fetchCart = createAsyncThunk(
       return await response.data;
     } catch (error) {
       console.error('Error fetching cart:', error);
-      return rejectWithValue(error.response ? error.response.data : error.message);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+export const fetchPageViewCount = createAsyncThunk(
+  'tracking/fetchPageViewCount',
+  async (pageUrl, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.get(
+        `${apiUrl}/cart/track-page-view/`,
+        {
+          params: { page_url: pageUrl },
+        }
+      );
+      console.log('Api response:', response.data); // Log count to the console
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching page view count:', error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
+    }
+  }
+);
+
+export const trackPageView = createAsyncThunk(
+  'tracking/trackPageView',
+  async (pageUrl, { rejectWithValue }) => {
+    try {
+      const accessToken = localStorage.getItem('access_token');
+      if (!accessToken) {
+        throw new Error('User is not authenticated');
+      }
+      const response = await axiosClient.post(
+        `${apiUrl}/cart/track-page-view/`,
+        { page_url: pageUrl },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log('Page view tracked:', response.data); // Log the response to the console
+      return response.data;
+    } catch (error) {
+      console.error('Error tracking page view:', error);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
     }
   }
 );
@@ -58,7 +109,9 @@ export const addToCart = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.error('Error adding item to cart:', error);
-      return rejectWithValue(error.response ? error.response.data : error.message);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
     }
   }
 );
@@ -75,32 +128,39 @@ export const removeFromCart = createAsyncThunk(
       return productId;
     } catch (error) {
       console.error('Error removing item from cart:', error);
-      return rejectWithValue(error.response ? error.response.data : error.message);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
     }
   }
 );
 
 export const checkoutCart = createAsyncThunk(
   'cart/checkoutCart',
-  async (_, {getState, rejectWithValue }) => {
-
-    
+  async (_, { getState, rejectWithValue }) => {
     try {
       const state = getState();
-    const cartItems = state.cart.items; // Access cart items from state
-    const cartTotal = cartItems.reduce((total, item) => total + item.total_price, 0);
+      const cartItems = state.cart.items; // Access cart items from state
+      const cartTotal = cartItems.reduce(
+        (total, item) => total + item.total_price,
+        0
+      );
 
-      console.log('before stripe')
+      console.log('before stripe');
 
-      const response = await axiosClient.post(`${apiUrl}/cart/create-payment-intent/`, {
-      
-        amount: cartTotal * 100
-      });
-      console.log('stripe', response)
+      const response = await axiosClient.post(
+        `${apiUrl}/cart/create-payment-intent/`,
+        {
+          amount: cartTotal * 100,
+        }
+      );
+      console.log('stripe', response);
       return response.data; // Contains the Stripe Checkout URL
     } catch (error) {
       console.error('Error during checkout:', error);
-      return rejectWithValue(error.response ? error.response.data : error.message);
+      return rejectWithValue(
+        error.response ? error.response.data : error.message
+      );
     }
   }
 );
@@ -112,6 +172,31 @@ const cartSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(fetchPageViewCount.fulfilled, (state, action) => {
+        console.log('Payload in reducer:', action.payload);  // Check what the payload contains
+
+        state.pageViewCount = action.payload.page_view_count
+      })
+      .addCase(fetchPageViewCount.rejected, (state, action) => {
+        console.error('Failed to fetch page view count:', action.payload);
+        state.error = action.payload;
+      })
+      .addCase(trackPageView.pending, (state) => {
+        state.loading = true;
+        state.success = false;
+        state.error = null;
+      })
+      .addCase(trackPageView.fulfilled, (state, action) => {
+        state.loading = false;
+        state.success = true;
+        state.error = null;
+        state.lastTrackedPage = action.payload?.pageUrl || null; // Store page URL safely
+      })
+      .addCase(trackPageView.rejected, (state, action) => {
+        state.loading = false;
+        state.success = false;
+        state.error = action.payload || 'Failed to track page view';
+      })
       .addCase(fetchCart.pending, (state) => {
         state.status = 'loading';
       })
@@ -139,7 +224,9 @@ const cartSlice = createSlice({
       })
       .addCase(removeFromCart.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.items = state.items.filter((item) => item.product.id !== action.payload);
+        state.items = state.items.filter(
+          (item) => item.product.id !== action.payload
+        );
       })
       .addCase(removeFromCart.rejected, (state, action) => {
         state.status = 'failed';

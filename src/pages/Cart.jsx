@@ -1,14 +1,17 @@
 import { useDispatch, useSelector } from 'react-redux';
 import {
   checkoutCart,
+  fetchPageViewCount,
   removeFromCart,
+  trackPageView,
   updateCartItem,
 } from '../features/cartSlice';
 import useAuthAndFetchCart from '../hooks/useAuthAndFetchCart';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import LiveOrderStatus from '../components/withoutStories/LiveOrderStatus';
 import { useAppContext } from '../context/GlobalContext';
 import PurchaseHistory from '../components/withoutStories/PurchaseHistory';
+import { useEffect } from 'react';
 
 const CartPage = () => {
   useAuthAndFetchCart();
@@ -25,6 +28,20 @@ const CartPage = () => {
 
   const { items: cart, status, error } = useSelector((state) => state.cart);
 
+
+///////////////////////
+  // for tracking page visits, (can be done more efficiently, check later)
+  const count = useSelector((state) => state.cart?.pageViewCount || 0);  // Default to 0 if undefined
+
+  useEffect(() => {
+    const pageUrl = window.location.pathname;  // Get the current page URL
+    console.log('Page URL:', pageUrl);
+    dispatch(trackPageView(pageUrl))
+    dispatch(fetchPageViewCount(pageUrl));
+  }, [dispatch, location.pathname]);
+
+  console.log('Page view count!!!:', count);
+/////////////////////
 
   // Display loading state
   if (status === 'loading') {
@@ -69,10 +86,18 @@ const CartPage = () => {
     }
   };
 
+
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
-      
+      {/* <div>
+      <h1>Cart Page</h1>
+      {status === 'loading' && <p>Tracking page view...</p>}
+      {status === 'success' && <p>Page view tracked successfully!</p>}
+      {status === 'error' && <p>Error: {error}</p>}
+    </div> */}
+    {/* <p>Page view count: {count}</p> */}
+
         <div className="space-y-4">
           {cart.map((item) => (
             <div
