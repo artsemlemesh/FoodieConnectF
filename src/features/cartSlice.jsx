@@ -10,6 +10,7 @@ const initialState = {
   status: 'idle',
   error: null,
   pageViewCount: null,
+  totalViews: null,
 };
 
 // Update a cart item's quantity
@@ -41,6 +42,7 @@ export const fetchCart = createAsyncThunk(
         throw new Error('User is not authenticated');
       }
       const response = await axiosClient.get(`${apiUrl}/cart/cart/`);
+      // console.log('fetchCart', response);
       return await response.data;
     } catch (error) {
       console.error('Error fetching cart:', error);
@@ -175,7 +177,8 @@ const cartSlice = createSlice({
       .addCase(fetchPageViewCount.fulfilled, (state, action) => {
         console.log('Payload in reducer:', action.payload);  // Check what the payload contains
 
-        state.pageViewCount = action.payload.page_view_count
+        state.pageViewCount = action.payload.daily_views
+        state.totalViews = action.payload.total_views
       })
       .addCase(fetchPageViewCount.rejected, (state, action) => {
         console.error('Failed to fetch page view count:', action.payload);

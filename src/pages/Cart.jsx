@@ -32,6 +32,7 @@ const CartPage = () => {
 ///////////////////////
   // for tracking page visits, (can be done more efficiently, check later)
   const count = useSelector((state) => state.cart?.pageViewCount || 0);  // Default to 0 if undefined
+  const totalCount = useSelector((state) => state.cart?.totalViews || 0);  // Default to 0 if undefined
 
   useEffect(() => {
     const pageUrl = window.location.pathname;  // Get the current page URL
@@ -41,6 +42,7 @@ const CartPage = () => {
   }, [dispatch, location.pathname]);
 
   console.log('Page view count!!!:', count);
+  console.log('Total view count!!!:', totalCount);
 /////////////////////
 
   // Display loading state
@@ -90,14 +92,7 @@ const CartPage = () => {
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
-      {/* <div>
-      <h1>Cart Page</h1>
-      {status === 'loading' && <p>Tracking page view...</p>}
-      {status === 'success' && <p>Page view tracked successfully!</p>}
-      {status === 'error' && <p>Error: {error}</p>}
-    </div> */}
-    {/* <p>Page view count: {count}</p> */}
-
+     
         <div className="space-y-4">
           {cart.map((item) => (
             <div
