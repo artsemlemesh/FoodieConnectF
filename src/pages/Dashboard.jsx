@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Tooltip, Cell } from 'recharts';
 import { axiosClient } from '../utils/axiosClient';
+import { BarChart, Bar, XAxis, YAxis } from 'recharts';
+import { useSelector } from 'react-redux';
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
@@ -16,6 +18,14 @@ const Dashboard = () => {
   const data = [
     { name: 'Total Orders', value: dashboardData?.orders_count || 0 },
     { name: 'Total Revenue', value: dashboardData?.total_revenue || 0 },
+  ];
+  const count = useSelector((state) => state.cart?.pageViewCount || 0); // Default to 0 if undefined
+  const totalCount = useSelector((state) => state.cart?.totalViews || 0); // Default to 0 if undefined
+
+  const pageViews = [
+    { page: 'Today views', views: count }, // Replace with dynamic data from Redux
+    { page: 'Total views', views: totalCount },
+    { page: 'Product Page', views: 20 },
   ];
 
   const COLORS = ['#0088FE', '#00C49F'];
@@ -35,7 +45,10 @@ const Dashboard = () => {
             dataKey="value"
           >
             {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              <Cell
+                key={`cell-${index}`}
+                fill={COLORS[index % COLORS.length]}
+              />
             ))}
           </Pie>
           <Tooltip />
@@ -43,6 +56,12 @@ const Dashboard = () => {
       ) : (
         <p>Loading data...</p>
       )}
+      <BarChart width={500} height={300} data={pageViews}>
+        <XAxis dataKey="page" />
+        <YAxis />
+        <Tooltip />
+        <Bar dataKey="views" fill="#82ca9d" />
+      </BarChart>
     </div>
   );
 };

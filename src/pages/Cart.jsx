@@ -12,6 +12,7 @@ import LiveOrderStatus from '../components/withoutStories/LiveOrderStatus';
 import { useAppContext } from '../context/GlobalContext';
 import PurchaseHistory from '../components/withoutStories/PurchaseHistory';
 import { useEffect } from 'react';
+// import OnlineUsers from '../components/withoutStories/OnlineUsers';
 
 const CartPage = () => {
   useAuthAndFetchCart();
@@ -150,6 +151,7 @@ const CartPage = () => {
       
       {orderId && <LiveOrderStatus orderId={orderId} />} 
       <PurchaseHistory />
+      {/* <OnlineUsers/> */}
     </div>
   );
 };

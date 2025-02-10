@@ -13,6 +13,7 @@ import { useQuery } from '@apollo/client';
 import { GET_PRODUCTS } from '../graphql/queries';
 import FilterBar from '../components/filterBar';
 import atob from 'atob';
+import OnlineUsers from '../components/withoutStories/OnlineUsers';
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -177,6 +178,7 @@ const HomePage = () => {
     <div className="container mx-auto p-4">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-3xl font-bold">Cuisines</h1>
+        <OnlineUsers/>
 
         <div className="relative flex items-center space-x-2">
           <FaSearch className="text-gray-500" />
