@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../features/authSlice';
 import { useAppContext } from '../../context/GlobalContext';
 import { useDebounce } from '../../hooks/useDebounce';
+import { usePostHog } from 'posthog-js/react';
 
 const AuthForm = ({ type, onSubmit }) => {
   const { authStatus, error, user } = useAppContext();
@@ -30,8 +31,16 @@ const AuthForm = ({ type, onSubmit }) => {
     onSubmit(data);
   };
 
+  const posthog = usePostHog();
+
   const handleLogout = async () => {
     dispatch(logoutUser());
+    posthog.reset();
+
+    // Optionally, you can also capture a logout event
+    posthog.capture('user logout', {
+        path: window.location.pathname,
+    });
     resetForm();
   };
 

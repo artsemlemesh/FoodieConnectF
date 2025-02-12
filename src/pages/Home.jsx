@@ -14,6 +14,7 @@ import { GET_PRODUCTS } from '../graphql/queries';
 import FilterBar from '../components/filterBar';
 import atob from 'atob';
 import OnlineUsers from '../components/withoutStories/OnlineUsers';
+import { usePostHog } from 'posthog-js/react';
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -40,6 +41,18 @@ const HomePage = () => {
   const [cardDimensions, setCardDimensions] = useState({
     width: 270,
   });
+
+  const posthog = usePostHog();
+  useEffect(() => {
+    if (user && user.username) {
+      // Check if user and username are defined
+      posthog.capture('page view HOME', {
+        user: user.username, // Log the username in the event
+        path: window.location.pathname,
+      });
+      posthog.identify(user.username); // Identify the user with their username
+    }
+  }, [posthog, user]);
 
   // Update filtered products whenever `searchTerm` or `products` changes
   useEffect(() => {
@@ -178,7 +191,7 @@ const HomePage = () => {
     <div className="container mx-auto p-4">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-3xl font-bold">Cuisines</h1>
-        <OnlineUsers/>
+        <OnlineUsers />
 
         <div className="relative flex items-center space-x-2">
           <FaSearch className="text-gray-500" />

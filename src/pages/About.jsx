@@ -1,6 +1,14 @@
-import React from 'react';
+import { usePostHog } from 'posthog-js/react';
+import React, { useEffect } from 'react';
 
 const About = () => {
+  const posthog = usePostHog();
+  
+    useEffect(() => {
+      posthog.capture('page view ABOUT', {
+          path: window.location.pathname,
+      });
+  }, [posthog]);
   return (
     <div>
       <h2 className="text-2xl font-bold">About Us</h2>

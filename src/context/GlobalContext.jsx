@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, registerUser } from '../features/authSlice';
+import { usePostHog } from 'posthog-js/react';
 
 const AppContext = createContext();
 
@@ -47,11 +48,18 @@ export const AppProvider = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [isLogin, setIsLogin] = useState(true);
+  const posthog = usePostHog(); // Initialize PostHog
 
   const handleLogin = async (data) => {
     const { username, password1 } = data; //extract name and pass
     try {
       await dispatch(loginUser({ username, password1 })).unwrap();
+      // Capture the login event
+      posthog.capture('User Login', { 
+        username: username,
+        path: window.location.pathname, // Optional: include the current path
+       });
+      posthog.identify(username);
       closeModal();
     } catch (err) {
       console.error('Login failed:', err);
@@ -65,6 +73,13 @@ export const AppProvider = ({ children }) => {
       dispatch(
         registerUser({ username, email, password1, password2 })
       ).unwrap();
+      // Capture the registration event
+      posthog.capture('User Registration', {
+        username: username, // Include the username
+        email: email, // Include the email
+        path: window.location.pathname, // Optional: include the current path
+      });
+      posthog.identify(email);
       closeModal();
     } catch (err) {
       console.error('Login failed:', err);

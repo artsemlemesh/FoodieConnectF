@@ -12,9 +12,8 @@ import { AppProvider } from './context/GlobalContext.jsx';
 import { setupAxiosInterceptors } from './utils/axiosClient.jsx';
 import * as Sentry from '@sentry/react';
 import { ApolloProvider } from '@apollo/client';
-import client from './utils/apolloClient.jsx'
-
-
+import client from './utils/apolloClient.jsx';
+import { PostHogProvider} from 'posthog-js/react'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,17 +40,25 @@ const root = createRoot(container, {
   onRecoverableError: Sentry.reactErrorHandler(),
 });
 
+const options = {
+  api_host: import.meta.env.VITE_APP_PUBLIC_POSTHOG_HOST,
+}
+
 root.render(
   // <StrictMode>
-  <ApolloProvider client={client}>
-    <QueryClientProvider client={queryClient}>
-      <Provider store={store}>
-        <AppProvider>
-          <App />
-        </AppProvider>
-      </Provider>
-    </QueryClientProvider>
-  </ApolloProvider>
-
+  <PostHogProvider
+    apiKey={import.meta.env.VITE_APP_PUBLIC_POSTHOG_KEY}
+    options={options}
+  >
+    <ApolloProvider client={client}>
+      <QueryClientProvider client={queryClient}>
+        <Provider store={store}>
+          <AppProvider>
+            <App />
+          </AppProvider>
+        </Provider>
+      </QueryClientProvider>
+    </ApolloProvider>
+  </PostHogProvider>
   // </StrictMode>
 );
