@@ -22,7 +22,6 @@ const HomePage = () => {
   const containerRef = useRef(null);
 
   const { user, openModal } = useAppContext();
-
   const [searchTerm, setSearchTerm] = useState(''); // Live search term
   const [columnCount, setColumnCount] = useState(4);
   const [gridWidth, setGridWidth] = useState(window.innerWidth);

@@ -18,6 +18,7 @@ export const registerUser = createAsyncThunk(
         email,
         password1,
         password2,
+        // is_premium
       });
 
       const data = response.data;
@@ -27,7 +28,7 @@ export const registerUser = createAsyncThunk(
       localStorage.setItem('access_token', data.access);
       localStorage.setItem('refresh_token', data.refresh);
 
-      const user = { username: data.user.username, photo: data.user.photo, is_admin: data.user.is_admin };
+      const user = { username: data.user.username, photo: data.user.photo, is_admin: data.user.is_admin, is_premium: data.user.is_premium };
       localStorage.setItem('user', JSON.stringify(user));
       console.log('Register response at the very end:', user);
 
@@ -47,6 +48,7 @@ export const loginUser = createAsyncThunk(
     try {
       const response = await axiosClient.post(`${apiUrl}/users/token/`, {
         username,
+        // is_premium,
         password: password1,
       });
 
@@ -57,7 +59,7 @@ export const loginUser = createAsyncThunk(
       localStorage.setItem('access_token', data.access);
       localStorage.setItem('refresh_token', data.refresh);
 
-      const user = { username: data.username, photo: data.photo, is_admin: data.is_admin, id: data.id  };
+      const user = { username: data.username, photo: data.photo, is_admin: data.is_admin, id: data.id, is_premium: data.is_premium  };
       localStorage.setItem('user', JSON.stringify(user));
       return user;
     } catch (error) {
@@ -200,7 +202,8 @@ const authSlice = createSlice({
         state.user = {
           username: action.payload.username, // this username should be the same as in other places
           photo: action.payload.photo,
-          is_admin: action.payload.is_admin
+          is_admin: action.payload.is_admin,
+          is_premium: action.payload.is_premium
         };
       })
       .addCase(registerUser.rejected, (state, action) => {
@@ -216,6 +219,7 @@ const authSlice = createSlice({
           username: action.payload.username, // this username should be the same as in other places
           photo: action.payload.photo,
           is_admin: action.payload.is_admin,
+          is_premium: action.payload.is_premium,
           id: action.payload.id // backend is set up seems like
         };
       })
