@@ -1,34 +1,46 @@
 import { usePostHog } from 'posthog-js/react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppContext } from '../context/GlobalContext';
+import SubscriptionPlansPage from '../components/withoutStories/SubscriptionPlansPage';
+import { axiosClient } from '../utils/axiosClient';
+const apiUrl = import.meta.env.VITE_APP_API_URL;
 
 const About = () => {
   const posthog = usePostHog();
-
-  const { user, openModal } = useAppContext();
-
+  const [hasSubscription, setHasSubscription] = useState(null);  // null for initial loading state
+  const [plan, setPlan] = useState(null)
+  const { user } = useAppContext();
+  console.log('sub', hasSubscription)
+  console.log('plan', plan)
   useEffect(() => {
-    posthog.capture('page view ABOUT', {
-      path: window.location.pathname,
-    });
-  }, [posthog]);
+    if (user ) {  // Ensure user is available before fetching subscription status
+      posthog.capture('page view ABOUT', {
+        path: window.location.pathname,
+      });
 
-  if (!user.is_premium) {
-    return (
-      <div className="bg-yellow-50 p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-bold text-red-600">Access Restricted</h2>
-        <p className="mt-2 text-gray-700">
-          Upgrade to a <strong>Premium Plan</strong> to access this content and
-          enjoy full features.
-        </p>
-        <button
-          onClick={openModal}
-          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Upgrade Now
-        </button>
-      </div>
-    );
+      const fetchSubStatus = async () => {
+        try {
+          console.log('Fetching subscription status...');
+          const response = await axiosClient.get(`${apiUrl}/users/status/`);
+          console.log('Subscription status response:', response.data);
+          setHasSubscription(response.data.active);
+          setPlan(response.data.plan)
+        } catch (error) {
+          console.error('Failed to fetch subscription status', error);
+          setHasSubscription(false);  // Assume no subscription on error
+        }
+      };
+
+      fetchSubStatus();
+    }
+  }, [posthog, user]);
+
+  if (hasSubscription === null) {
+    return <div className="text-center">Loading...</div>;  // Show loading spinner
+  }
+
+  if (!hasSubscription) {
+    return <SubscriptionPlansPage plan={plan}/>;
   }
 
   return (
@@ -38,6 +50,7 @@ const About = () => {
         FoodieConnect connects you to the best restaurants and food delivery
         services in your area.
       </p>
+      <SubscriptionPlansPage plan={plan}/>
     </div>
   );
 };
