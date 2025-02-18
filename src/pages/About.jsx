@@ -7,13 +7,14 @@ const apiUrl = import.meta.env.VITE_APP_API_URL;
 
 const About = () => {
   const posthog = usePostHog();
-  const [hasSubscription, setHasSubscription] = useState(null);  // null for initial loading state
-  const [plan, setPlan] = useState(null)
+  const [hasSubscription, setHasSubscription] = useState(null); // null for initial loading state
+  const [plan, setPlan] = useState(null);
   const { user } = useAppContext();
-  console.log('sub', hasSubscription)
-  console.log('plan', plan)
+  console.log('sub', hasSubscription);
+  console.log('plan', plan);
   useEffect(() => {
-    if (user ) {  // Ensure user is available before fetching subscription status
+    if (user) {
+      // Ensure user is available before fetching subscription status
       posthog.capture('page view ABOUT', {
         path: window.location.pathname,
       });
@@ -24,10 +25,10 @@ const About = () => {
           const response = await axiosClient.get(`${apiUrl}/users/status/`);
           console.log('Subscription status response:', response.data);
           setHasSubscription(response.data.active);
-          setPlan(response.data.plan)
+          setPlan(response.data.plan);
         } catch (error) {
           console.error('Failed to fetch subscription status', error);
-          setHasSubscription(false);  // Assume no subscription on error
+          setHasSubscription(false); // Assume no subscription on error
         }
       };
 
@@ -35,12 +36,12 @@ const About = () => {
     }
   }, [posthog, user]);
 
-  if (hasSubscription === null) {
-    return <div className="text-center">Loading...</div>;  // Show loading spinner
-  }
+  // if (hasSubscription === null) {
+  //   return <div className="text-center">Loading...</div>; // Show loading spinner
+  // }
 
   if (!hasSubscription) {
-    return <SubscriptionPlansPage plan={plan}/>;
+    return <SubscriptionPlansPage plan={plan} />;
   }
 
   return (
@@ -50,7 +51,7 @@ const About = () => {
         FoodieConnect connects you to the best restaurants and food delivery
         services in your area.
       </p>
-      <SubscriptionPlansPage plan={plan}/>
+      <SubscriptionPlansPage plan={plan} />
     </div>
   );
 };

@@ -7,7 +7,6 @@ const SubscriptionPlansPage = ({ plan }) => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [isSubscribed, setIsSubscribed] = useState(false); // Initial state
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -29,19 +28,12 @@ const SubscriptionPlansPage = ({ plan }) => {
   const handleSubscribe = async (planId) => {
     try {
       console.log(`Subscribing to plan with ID: ${planId}`);
-      const response = await axiosClient.post(`${apiUrl}/users/subscribe/`, {
-        plan: planId,
-      });
-      console.log('Subscription successful:', response.data);
-      setIsSubscribed(true);
+      await axiosClient.post(`${apiUrl}/users/subscribe/`, { plan: planId });
+      window.location.reload(); // Refresh page to reflect new subscription
     } catch (error) {
       console.error('Subscription failed:', error);
     }
   };
-
-  if (isSubscribed) {
-    return <div className="text-center">Thank you for subscribing!</div>;
-  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -49,57 +41,68 @@ const SubscriptionPlansPage = ({ plan }) => {
         Choose Your Plan
       </h2>
 
-      {(plan === 'free' || plan === null) && (
-        <div className="text-center text-lg text-gray-600 mb-6">
-          <span className="text-xl font-semibold">Your current plan:</span> Free
-        </div>
-      )}
-
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {plans.map((planItem) => (
-          <div key={planItem.id} className="border rounded-lg p-6 shadow-md">
-            <h3 className="text-xl font-bold">{planItem.name}</h3>
-            <p className="mt-2 text-gray-600">{planItem.description}</p>
-            <p className="mt-4 text-2xl font-semibold">${planItem.price}</p>
-            <ul className="mt-4 space-y-2">
-              <li>✔ Access to premium content</li>
-              <li>✔ Priority support</li>
-              <li>✔ More features...</li>
-            </ul>
+        {plans.map((planItem) => {
+          const isCurrentPlan = plan === planItem.name.toLowerCase();
 
-            {/* {(plan === 'free' || plan === null) && (
-              <button
-                disabled
-                className="mt-6 w-full bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed"
-              >
-                Free Plan - Not Available
-              </button>
-            )} */}
+          return (
+            <div key={planItem.id} className="border rounded-lg p-6 shadow-md">
+              <div className="flex flex-col h-full">
+                {/* Plan details */}
+                <div className="flex-grow">
+                  <h3 className="text-xl font-bold">{planItem.name}</h3>
+                  <p className="mt-2 text-gray-600">{planItem.description}</p>
+                  <p className="mt-4 text-2xl font-semibold">
+                    ${planItem.price}
+                  </p>
 
-            {plan === 'pro' ? (
-              <button
-                disabled
-                className="mt-6 w-full bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed"
-              >
-                Your current plan: Pro
-              </button>
-            ) : plan === 'premium' ? (
-              <button
-                disabled
-                className="mt-6 w-full bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed"
-              >
-                Your current plan: Premium
-              </button>
-            ) : (
-              <button
-                onClick={() => handleSubscribe(planItem.id)}
-                className="mt-6 w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
-              >
-                Subscribe
-              </button>
-            )}
-          </div>
-        ))}
+                  {/* Features */}
+                  {planItem.name.toLowerCase() === 'free' && (
+                    <ul className="mt-4 space-y-2">
+                      <li>✔ Limited content access</li>
+                    </ul>
+                  )}
+                  {planItem.name.toLowerCase() === 'premium' && (
+                    <ul className="mt-4 space-y-2">
+                      <li>✔ Access to premium content</li>
+                      <li>✔ Priority support</li>
+                      <li>✔ Ad-free experience</li>
+                    </ul>
+                  )}
+                  {planItem.name.toLowerCase() === 'pro' && (
+                    <ul className="mt-4 space-y-2">
+                      <li>✔ All premium features</li>
+                      <li>✔ Advanced analytics</li>
+                      <li>✔ Customization options</li>
+                      <li>✔ Dedicated support</li>
+                    </ul>
+                  )}
+                </div>
+
+                {/* Button (sticks to bottom) */}
+                {planItem.name.toLowerCase() === 'free' ? (
+                  <div className="mt-6 text-gray-600 font-semibold text-center">
+                    Default plan
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => handleSubscribe(planItem.id)}
+                    className={`mt-auto w-full text-white py-2 px-4 rounded ${
+                      isCurrentPlan
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : planItem.name.toLowerCase() === 'premium'
+                          ? 'bg-yellow-500 hover:opacity-90 transition'
+                          : 'bg-red-600 hover:opacity-90 transition'
+                    }`}
+                    disabled={isCurrentPlan}
+                  >
+                    {isCurrentPlan ? 'Your current plan' : 'Subscribe'}
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
