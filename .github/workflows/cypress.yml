@@ -18,9 +18,9 @@ jobs:
 
       - name: Install Node.js
         uses: actions/setup-node@v4
-        with:
-          node-version: 18  # Use Node.js 18 (adjust if needed)
-          cache: 'yarn'  # Cache dependencies
+        # with:
+        #   node-version: 18  # Use Node.js 18 (adjust if needed)
+        #   cache: 'yarn'  # Cache dependencies
 
       - name: Install Dependencies
         run: yarn install --frozen-lockfile  # Ensures same dependencies as local
@@ -34,7 +34,7 @@ jobs:
         run: yarn add wait-on --dev
 
       - name: Wait for App to be Ready
-        run: npx wait-on http://localhost:3001/ --timeout 120000  # Ensures app is running before tests
+        run: yarn run wait-on http://localhost:3001/ --timeout 120000  # Ensures app is running before tests
 
       - name: Run Cypress Tests
         run: yarn cypress run --headless  # Run Cypress tests in headless mode
