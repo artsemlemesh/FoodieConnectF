@@ -31,7 +31,7 @@ jobs:
           CI: true  # Prevents Create React App from hanging in CI
 
       - name: Wait for App to be Ready
-        run: npx wait-on http://localhost:3001  # Ensures app is running before tests
+        run: yarn wait-on http://localhost:3001  # Ensures app is running before tests
 
       - name: Run Cypress Tests
         run: yarn cypress run --headless  # Run Cypress tests in headless mode
