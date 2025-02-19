@@ -1,21 +1,51 @@
 name: Cypress Tests
 
-on: [push, pull_request]
+on: 
+  push:
+    branches:
+      - main  # Runs tests when pushing to main
+  pull_request:
+    branches:
+      - main  # Runs tests on PRs to main
 
 jobs:
-  cypress:
-    runs-on: ubuntu-latest
+  cypress-run:
+    runs-on: ubuntu-latest  # Run tests on the latest Ubuntu
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v4  # Get the latest repo code
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '14'
+          node-version: 18  # Use Node.js 18 (adjust if needed)
+          cache: 'yarn'  # Cache dependencies
 
-      - name: Install dependencies
-        run: yarn install
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile  # Ensures same dependencies as local
 
-      - name: Run Cypress tests
-        run: yarn run cypress run
+      - name: Start React App
+        run: yarn start &
+        env:
+          CI: true  # Prevents Create React App from hanging in CI
+
+      - name: Wait for App to be Ready
+        run: npx wait-on http://localhost:3001  # Ensures app is running before tests
+
+      - name: Run Cypress Tests
+        run: yarn cypress run --headless  # Run Cypress tests in headless mode
+
+      - name: Upload Cypress Screenshots (if tests fail)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          
+      - name: Upload Cypress Videos (if tests fail)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-videos
+          path: cypress/videos
