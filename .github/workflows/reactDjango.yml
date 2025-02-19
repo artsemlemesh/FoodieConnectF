@@ -1,31 +1,28 @@
 name: Cypress Tests
 
-on:
+on: 
   push:
     branches:
-      - main
-  
+      - main  # Change to your default branch if needed
+  pull_request:
 
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
-
-    # services:
-    #   postgres:
-    #     image: postgres:15
-    #     env:
-    #       POSTGRES_USER: myuser
-    #       POSTGRES_PASSWORD: mypassword
-    #       POSTGRES_DB: mydatabase
-    #     ports:
-    #       - 5432:5432
+    
 
     steps:
-      # Step 1: Checkout Repository
-      - name: Checkout Repository
+      # 1️⃣ Checkout the frontend repo
+      - name: Checkout Frontend Code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Python and Install Dependencies
+      # 2️⃣ Checkout the backend repo
+      - name: Checkout Backend Code
+        run: |
+          git clone -b main https://github.com/artsemlemesh/FoodieConnectB.git backend
+          ls -la backend  # Debugging
+
+      # 3️⃣ Set up Python & install backend dependencies
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -33,67 +30,49 @@ jobs:
 
       - name: Install Backend Dependencies
         run: |
+          cd backend
           python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
           python manage.py migrate
-          python manage.py collectstatic --noinput
-        # env:
-        #   DATABASE_URL: postgres://myuser:mypassword@localhost:5432/mydatabase
-          
-      # Step 3: Start Django Backend with Daphne
-      - name: Start Backend Server
+        
+      # 4️⃣ Start Django Backend with Daphne
+      - name: Start Backend with Daphne
         run: |
+          cd backend
           source venv/bin/activate
-          daphne -b 0.0.0.0 -p 8000 backend.asgi:application &
-        # env:
-        #   DATABASE_URL: postgres://myuser:mypassword@localhost:5432/mydatabase
+          daphne -b 0.0.0.0 -p 8000 myproject.asgi:application &
+        
 
-      # Step 4: Set up Node.js and Install Frontend Dependencies
+      # 5️⃣ Wait for Backend to be Ready
+      - name: Wait for Backend
+        run: |
+          sleep 10  # Wait for DB & backend to initialize
+          curl --retry 10 --retry-delay 5 --retry-connrefused -I http://localhost:8000
+
+      # 6️⃣ Set up Node.js & Install Frontend Dependencies
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: 18
+          cache: yarn
 
       - name: Install Frontend Dependencies
-        run: yarn install
-        working-directory: frontend
+        run: yarn install --frozen-lockfile
 
-      # Step 5: Start React Frontend
+      # 7️⃣ Start React App
       - name: Start React App
         run: yarn dev &
-        working-directory: frontend
         env:
-          CI: true  
+          CI: true  # Prevents Create React App from hanging in CI
 
-      # # Step 6: Wait for Backend and Frontend to be Ready
-      # - name: Install wait-on
-      #   run: yarn add wait-on --dev
-      #   working-directory: frontend
+      # 8️⃣ Install wait-on (to ensure React is ready)
+      - name: Install wait-on
+        run: yarn add wait-on --dev
 
-      # - name: Wait for Backend & Frontend
-      #   run: yarn run wait-on http://localhost:3001/ http://localhost:8000/ --timeout 120000
-      #   working-directory: frontend
+      - name: Wait for App to be Ready
+        run: yarn run wait-on http://localhost:3001/ --timeout 120000
 
-      - name: Delay to Ensure App is Ready
-        run: sleep 5 
-
-      # Step 7: Run Cypress Tests
+      # 9️⃣ Run Cypress Tests
       - name: Run Cypress Tests
         run: yarn cypress run --headless
-        working-directory: frontend
-
-      # # Step 8: Upload Cypress Videos & Screenshots
-      # - name: Upload Cypress Videos
-      #   if: always()
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: cypress-videos
-      #     path: frontend/cypress/videos/
-
-      # - name: Upload Cypress Screenshots
-      #   if: always()
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: cypress-screenshots
-      #     path: frontend/cypress/screenshots/
