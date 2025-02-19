@@ -40,7 +40,7 @@ jobs:
       # 4️⃣ Start Django Backend with Daphne
       - name: Start Backend with Daphne
         run: |
-          
+          ls
           source venv/bin/activate
           daphne -b 0.0.0.0 -p 8000 myproject.asgi:application &
         
