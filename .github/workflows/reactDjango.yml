@@ -30,6 +30,8 @@ jobs:
       - name: Install Backend Dependencies
         run: |
           ls
+          cd FoodieConnectB
+          ls
           python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
