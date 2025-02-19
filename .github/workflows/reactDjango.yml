@@ -20,7 +20,6 @@ jobs:
       - name: Checkout Backend Code
         run: |
           git clone -b main https://github.com/artsemlemesh/FoodieConnectB.git 
-          ls -la backend  # Debugging
 
       # 3️⃣ Set up Python & install backend dependencies
       - name: Set up Python
