@@ -34,7 +34,7 @@ jobs:
         run: yarn add wait-on --dev
 
       - name: Wait for App to be Ready
-        run: yarn run wait-on http://localhost:3001 --timeout 60000  # Ensures app is running before tests
+        run: yarn run wait-on http://172.20.10.2:3001 --timeout 120000  # Ensures app is running before tests
 
       - name: Run Cypress Tests
         run: yarn cypress run --headless  # Run Cypress tests in headless mode
