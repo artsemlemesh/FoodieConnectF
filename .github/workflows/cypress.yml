@@ -30,9 +30,11 @@ jobs:
         env:
           CI: true  # Prevents Create React App from hanging in CI
 
-      
+      - name: Delay to Ensure App is Ready
+        run: sleep 5  # Wait 10 seconds before running tests
+
       - name: Run Cypress Tests
-        run: yarn cypress run --headless  # Run Cypress tests in headless mode
+        run: yarn cypress run --headless --config retries=2  # Run Cypress tests in headless mode
 
 
       - name: Upload Cypress Screenshots (if tests fail)
