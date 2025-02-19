@@ -26,7 +26,7 @@ jobs:
         run: yarn install --frozen-lockfile  # Ensures same dependencies as local
 
       - name: Start React App
-        run: yarn start &
+        run: yarn dev &
         env:
           CI: true  # Prevents Create React App from hanging in CI
 
