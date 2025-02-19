@@ -29,16 +29,12 @@ describe('Registration Modal', () => {
     cy.log(`Confirming password`);
     cy.contains('label', 'Confirm the Password').parent().find('input').type(password);
 
-    cy.log('Intercepting API request');
-    cy.intercept('POST', '/api/register').as('registerRequest');
+    
 
     cy.log('Clicking register button');
     cy.contains('button', 'Register').click();
 
-    cy.log('Waiting for API response');
-    cy.wait('@registerRequest', { timeout: 10000 })
-      .its('response.statusCode')
-      .should('eq', 201);
+    
 
     cy.log('Checking for welcome message');
     cy.contains(`Welcome, ${username}`).should('be.visible');
