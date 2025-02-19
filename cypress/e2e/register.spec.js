@@ -3,11 +3,11 @@ describe('Registration Modal', () => {
     cy.visit('/'); // Visit the homepage before each test
   });
 
-  it('should log in a user and close the modal', () => {
+  it('should register a user and close the modal', () => {
     // Generate random username, email, and password
-    const username = 'user' + Math.random().toString(36).substring(2, 10); // Random username
-    const email = `${username}@example.com`; // Random email
-    const password = 'password' + Math.random().toString(36).substring(2, 10); // Random password
+    const username = 'user' + Math.random().toString(36).substring(2, 10);
+    const email = `${username}@example.com`;
+    const password = 'password' + Math.random().toString(36).substring(2, 10);
 
     // Step 1: Open the modal by clicking the "Log in" button
     cy.get('button').contains('Log in').click();
@@ -19,24 +19,24 @@ describe('Registration Modal', () => {
     cy.get('button').contains('Switch to Register').click();
 
     // Step 4: Type the randomly generated username, email, and password
-    cy.contains('label', 'Username').parent().find('input').type(username); // Random username
+    cy.contains('label', 'Username').parent().find('input').type(username);
+    cy.contains('label', 'Email').parent().find('input').type(email);
+    cy.contains('label', 'Password').parent().find('input').type(password);
+    cy.contains('label', 'Confirm the Password').parent().find('input').type(password);
 
-    cy.contains('label', 'Email').parent().find('input').type(email); // Random email
+    // Step 5: Intercept API request and wait for response
+    cy.intercept('POST', '/api/register').as('registerRequest'); // Adjust URL if needed
 
-    cy.contains('label', 'Password').parent().find('input').type(password); // Random password
+    // Step 6: Submit the registration form
+    cy.contains('button', 'Register').click();
 
-    cy.contains('label', 'Confirm the Password')
-      .parent()
-      .find('input')
-      .type(password); // Confirm password
+    // Step 7: Wait for the API response before continuing
+    cy.wait('@registerRequest', { timeout: 10000 }).its('response.statusCode').should('eq', 201);
 
-    // Step 5: Submit the registration form
-    cy.contains('button', 'Register').click(); // Adjust if needed for your form
+    // Step 8: Ensure the success message appears
+    cy.contains('Welcome, ' + username).should('be.visible');
 
-    // Step 6: Optionally check for successful registration (e.g., verify a confirmation message)
-    cy.contains('Welcome, ' + username).should('be.visible'); // Adjust this for your app's behavior after registration
-
-    // Step 7: Ensure the modal is no longer visible
+    // Step 9: Ensure the modal is no longer visible
     cy.get('.fixed.inset-0').should('not.exist');
   });
 });
