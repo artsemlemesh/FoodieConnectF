@@ -30,16 +30,11 @@ jobs:
         env:
           CI: true  # Prevents Create React App from hanging in CI
 
-      - name: Install wait-on
-        run: yarn add wait-on --dev
-
-      - name: Wait for App to be Ready
-        run: yarn run wait-on http://localhost:3001/ --timeout 120000  # Ensures app is running before tests
-
+      
       - name: Run Cypress Tests
         run: yarn cypress run --headless  # Run Cypress tests in headless mode
 
-        
+
       - name: Upload Cypress Screenshots (if tests fail)
         if: failure()
         uses: actions/upload-artifact@v4
