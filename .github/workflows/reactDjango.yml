@@ -29,11 +29,11 @@ jobs:
 
       - name: Install Backend Dependencies
         run: |
-          
+          ls
           python -m venv venv
           source venv/bin/activate
-          pip install -r myproject/requirements.txt
-          python myproject/manage.py migrate
+          pip install -r requirements.txt
+          python manage.py migrate
         
       # 4️⃣ Start Django Backend with Daphne
       - name: Start Backend with Daphne
