@@ -142,3 +142,6 @@ and then:
 
  yard dev 
  to start
+
+
+ run cypress test:yarn cypress open
