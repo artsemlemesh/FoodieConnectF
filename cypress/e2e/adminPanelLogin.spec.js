@@ -6,6 +6,6 @@ describe('Login to admin panel', () => {
     cy.get('input[name="password"]').type('admin', { log: false }); // Hides password from logs
     cy.get('input[type="submit"]').click();
     cy.url().should('include', '/admin/');
-    // cy.contains('Django administration').should('be.visible');
+    cy.contains('Django administration').should('be.visible');
   });
 });
