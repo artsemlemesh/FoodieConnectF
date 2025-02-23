@@ -4,7 +4,7 @@ describe('Homepage Search Test', () => {
   
       // 1️⃣ Select a random div containing an h3 tag
       cy.get('div')
-        .filter(':has(h3)') // Filter divs that contain h3 tags
+        // .filter(':has(h3)') // Filter divs that contain h3 tags
         .then(($divs) => {
           const randomIndex = Math.floor(Math.random() * $divs.length); // Pick a random index
           const selectedDiv = $divs[randomIndex];
