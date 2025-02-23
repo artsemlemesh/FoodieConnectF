@@ -18,7 +18,7 @@ describe('Homepage Search Test', () => {
   
           // 4️⃣ Wait for the search results to be visible
           cy.get('div')
-            .filter(':has(h3)')
+            // .filter(':has(h3)')
             .should('be.visible') // Ensure the results are visible before proceeding
             .and(($filteredDivs) => {
               const filteredText = $filteredDivs[0].querySelector('h3').innerText;
