@@ -85,3 +85,10 @@ jobs:
       # 9️⃣ Run Cypress Tests
       - name: Run Cypress Tests
         run: yarn cypress run --headless
+
+        # Store the video for later inspection
+      - name: Upload Cypress Video
+        uses: actions/upload-artifact@v2
+        with:
+          name: cypress-video
+          path: cypress/videos/**/*.mp4
