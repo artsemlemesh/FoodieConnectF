@@ -228,7 +228,7 @@ const HomePage = () => {
             isItemLoaded={isItemLoaded}
             itemCount={products.length + (pageInfo.hasNextPage ? 10 : 0)} // Add buffer for un-loaded items, fixed infinite scroll
             loadMoreItems={loadMoreItems}
-          > {/* infinite loader is used to load more items when the user scrolls to the bottom of the page */}
+          > 
             {({ onItemsRendered, ref }) => (
               <Grid
                 columnCount={columnCount}
