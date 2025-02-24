@@ -19,7 +19,7 @@ import { usePostHog } from 'posthog-js/react';
 const HomePage = () => {
   const dispatch = useDispatch();
 
-  const containerRef = useRef(null);
+  const containerRef = useRef(null); //reference to a dom element
 
   const { user, openModal } = useAppContext();
   const [searchTerm, setSearchTerm] = useState(''); // Live search term
@@ -41,7 +41,7 @@ const HomePage = () => {
     width: 270,
   });
 
-  const posthog = usePostHog();
+  const posthog = usePostHog(); //a hook to use posthog analytics
   useEffect(() => {
     if (user && user.username) {
       // Check if user and username are defined
@@ -62,13 +62,15 @@ const HomePage = () => {
     setFilteredProducts(filtered);
   }, [searchTerm, products]);
 
+  // Update products and pageInfo whenever `data` changes
   useEffect(() => {
     if (data) {
       setProducts(data.allProducts.edges.map((edge) => edge.node));
       setPageInfo(data.allProducts.pageInfo);
     }
   }, [data]);
-
+ //updates grid dimensions on resize
+ //debounce is used to limit the rate at which a function is called
   useEffect(() => {
     const updateGridDimensions = debounce(() => {
       if (containerRef.current) {
@@ -107,7 +109,9 @@ const HomePage = () => {
     // window.scrollTo({ top: 0, behavior: 'smooth' }) // implement smooth scroll, while searching the window doesnt go up
   }, 300);
 
-  const handleAddToCart = useCallback(
+
+  //add product to cart, if user isnt logged in, open modal for login
+  const handleAddToCart = useCallback( //useCallback is used to memoize the function, so that it doesnt change on every render (prevents unnecessary re-renders)
     (product) => {
       if (!user) {
         openModal();
@@ -133,6 +137,10 @@ const HomePage = () => {
     [user, openModal, dispatch]
   );
 
+  // Calculate the number of rows based on the number of products and columns
+  // Math.ceil is used to round up to the nearest whole number
+  // Math.ceil(3.2) = 4
+  //infinite loader is used to load more items when the user scrolls to the bottom of the page
   const rowCount = Math.ceil(products.length / columnCount);
 
   const isItemLoaded = useCallback(
@@ -160,6 +168,8 @@ const HomePage = () => {
     });
   };
 
+
+  // Update products when category filter changes
   const handleCategoryChange = (category) => {
     const newFilters = category ? { category } : {};
     setFilters(newFilters); // Update filter state
@@ -167,6 +177,7 @@ const HomePage = () => {
     setProducts([]);
   };
 
+  // Cell component for the grid
   const Cell = ({ columnIndex, rowIndex, style }) => {
     const productIndex = rowIndex * columnCount + columnIndex;
     if (productIndex >= filteredProducts.length) return null;
@@ -208,7 +219,7 @@ const HomePage = () => {
       <div
         ref={containerRef}
         className="relative h-[600px] w-full rounded-lg overflow-hidden shadow-lg bg-white"
-      >
+      > 
         <div className="absolute top-0 left-0 w-full h-8 bg-gradient-to-b from-white to-transparent pointer-events-none z-10"></div>
         <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-white to-transparent pointer-events-none z-10"></div>
 
@@ -217,7 +228,7 @@ const HomePage = () => {
             isItemLoaded={isItemLoaded}
             itemCount={products.length + (pageInfo.hasNextPage ? 10 : 0)} // Add buffer for un-loaded items, fixed infinite scroll
             loadMoreItems={loadMoreItems}
-          >
+          > {/* infinite loader is used to load more items when the user scrolls to the bottom of the page */}
             {({ onItemsRendered, ref }) => (
               <Grid
                 columnCount={columnCount}

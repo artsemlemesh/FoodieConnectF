@@ -26,7 +26,7 @@ import { ToastContainer } from 'react-toastify';
 function App() {
   return (
     <BrowserRouter>
-      <ToastContainer position="top-right" autoClose={3000} /> 
+      <ToastContainer position="top-right" autoClose={1000} /> 
 
       <Routes>
         {/* Main Routes */}

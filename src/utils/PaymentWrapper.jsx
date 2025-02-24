@@ -7,20 +7,22 @@ import { axiosClient } from './axiosClient';
 import LiveOrderStatus from '../components/withoutStories/LiveOrderStatus';
 import { useAppContext } from '../context/GlobalContext';
 
+// Load Stripe.js outside of components render to avoid recreating the `Stripe` object on every render
+//initialize stripe with publishable key
 const stripePromise = loadStripe(
   'pk_test_51PLGUYIhhfcmQPRULxV6eXxZHMWqEEW29vQ1FdVwcjE7CevUdT4TnnWVHu15xXC7ZQ7x8CXtXtUbqj3I2zZFlqEn00fS1PbLT0'
 );
 
 const PaymentWrapper = () => {
   const cart = useSelector((state) => state.cart.items);
-  const cartTotal = cart.reduce((total, item) => total + item.total_price, 0);
+  const cartTotal = cart.reduce((total, item) => total + item.total_price, 0); //calculates total price of all items in the cart
 
   const { state } = useAppContext();
 
   const [clientSecret, setClientSecret] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
+  useEffect(() => { //fetches client secret from backend when component mounts or when cartTotal changes
     if (!state.orderId) {
       console.error('Order ID is missing from context');
       return;

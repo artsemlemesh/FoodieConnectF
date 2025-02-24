@@ -8,8 +8,8 @@ import authMiddleware from '../middleware/authMiddleware';
 import { setupAxiosInterceptors } from '../utils/axiosClient';
 import { scheduleTokenRefresh } from '../utils/tokenRefreshScheduler';
 
-export const store = configureStore({
-  reducer: {
+export const store = configureStore({ //creates redux store
+  reducer: {  //combine all reducers
     auth: authReducer,
     cart: cartReducer,
     product: productReducer,
