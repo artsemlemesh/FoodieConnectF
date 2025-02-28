@@ -12,7 +12,6 @@ const OnlineUsers = ({ url = '/cart/online-users' }) => {
         const response = await axiosClient.get(url);
         // console.log('Online users:', response.data.online_users);
         setOnlineUsers(response.data.online_users);
-
       } catch (error) {
         console.error('Error fetching online users:', error);
 

@@ -29,7 +29,6 @@ const CartPage = () => {
 
   const { items: cart, status, error } = useSelector((state) => state.cart);
 
-
 ///////////////////////
   // for tracking page visits, (can be done more efficiently, check later)
   const count = useSelector((state) => state.cart?.pageViewCount || 0);  // Default to 0 if undefined
@@ -60,7 +59,6 @@ const CartPage = () => {
   if (status === 'succeeded' && cart.length === 0) {
     return <p>Your cart is empty.</p>;
   }
-
   const handleQuantityChange = (productId, newQuantity) => {
     if (newQuantity > 0) {
       dispatch(updateCartItem({ productId, quantity: newQuantity }));

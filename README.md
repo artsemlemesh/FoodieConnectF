@@ -145,3 +145,13 @@ and then:
 
 
  run cypress test:yarn cypress open
+
+
+ #check the dependencies (whether clash or not)If you see multiple versions of React installed, they might be conflicting.
+####npm ls react                                   
+
+##This lets you manually review updates. of dependencies
+#yarn upgrade-interactive --latest
+
+##This warns you about security issues without updating anything unexpectedly.
+#yarn audit

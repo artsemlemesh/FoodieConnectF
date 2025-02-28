@@ -1,4 +1,5 @@
 import React from 'react';
+import OrderTracking from '../components/withoutStories/newWS/OrderTracking';
 
 const Contact = () => {
   return (
@@ -24,6 +25,9 @@ const Contact = () => {
           Submit
         </button>
       </form>
+
+      <OrderTracking orderId={1} />
+
     </div>
   );
 };
