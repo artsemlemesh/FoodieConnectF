@@ -19,28 +19,33 @@ const OrderTracking = ({ orderId }) => {
     }
   };
 
+
+  const startDelivery = async () => {
+    try {
+      const response = await axiosClient.post(
+        `http://localhost:8000/livedel/orders/${orderId}/start-delivery/`
+      );
+
+      console.log('post response:', response.data);
+      // setOrder(response.data);
+    } catch (error) {
+      console.error('Error fetching order:', error);
+    }
+  };
+
   useEffect(() => {
-    const startDelivery = async () => {
-      try {
-        const response = await axiosClient.post(
-          `http://localhost:8000/livedel/orders/${orderId}/start-delivery/`
-        );
-
-        console.log('post response:', response.data);
-        // setOrder(response.data);
-      } catch (error) {
-        console.error('Error fetching order:', error);
-      }
-    };
-
+    
+    console.log('START DELIVERY');
     startDelivery();
     fetchOrder();
 
 
     // Polling: Fetch order updates every 5 seconds
     const interval = setInterval(fetchOrder, 5000);
+    // const interval1 = setInterval(startDelivery, 5000);
 
     return () => clearInterval(interval); // Cleanup on unmount
+    // return () => clearInterval(interval1); // Cleanup on unmount
 
   }, [orderId]);
 

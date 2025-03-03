@@ -10,17 +10,29 @@ const DeliveryMap = ({ orderId, restaurantLocation, deliveryLocation, routeData,
     routeData && routeData[currentIndex] ? routeData[currentIndex] : deliveryLocation
   );
 
-  const wsUrl = `${webSocketUrlDeliveryLive}/${orderId}/`;
-  console.log("WebSocket URL:", wsUrl);
+  const [currentPositionIndex, setCurrentPositionIndex] = useState(currentIndex); // Track the current position index
 
+  const wsUrl = `${webSocketUrlDeliveryLive}/${orderId}/`;
+  // console.log("WebSocket URL:", wsUrl);
+
+  // Use WebSocket to listen for position updates
   useWebSocket(wsUrl, (data) => {
-    setDeliveryPosition([data.latitude, data.longitude]);
+    if (data.latitude && data.longitude) {
+      // Update position based on WebSocket data
+      setDeliveryPosition([data.latitude, data.longitude]);
+      if (data.current_position_index !== undefined) {
+        setCurrentPositionIndex(data.current_position_index); // Update current index
+      }
+    }
   });
 
-  if (!restaurantLocation || !deliveryLocation) {
+  // If routeData or deliveryLocation is not available, show loading
+  if (!restaurantLocation || !deliveryLocation || !routeData) {
     return <p>Loading map...</p>;
   }
-
+  console.log("Restaurant Location:", restaurantLocation);
+  console.log("Delivery Location:", deliveryLocation);
+  console.log("Route Data:", routeData);
   return (
     <MapContainer
       center={restaurantLocation}
