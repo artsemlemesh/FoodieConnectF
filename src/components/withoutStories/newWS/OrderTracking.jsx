@@ -54,7 +54,7 @@ const OrderTracking = ({ orderId }) => {
 
   useEffect(() => {
     console.log('START DELIVERY');
-    startDelivery();
+    // startDelivery();
     fetchOrder();
 
     intervalRef.current = setInterval(fetchOrder, 5000);
@@ -78,7 +78,7 @@ const OrderTracking = ({ orderId }) => {
       >
         Refresh
       </button>
-
+      <button onClick={startDelivery} >Start Delivery</button>
       <p>Status: {order.status}</p>
       <p>
         ETA:{' '}
