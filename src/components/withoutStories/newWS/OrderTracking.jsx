@@ -82,10 +82,16 @@ const OrderTracking = ({ orderId }) => {
       <p>Status: {order.status}</p>
       <p>
         ETA:{' '}
-        {order.eta
+        {order.status === 'DELIVERED'
+          ? 'Delivered'
+          : order.eta
           ? new Date(order.eta).toLocaleTimeString()
           : 'Calculating...'}
       </p>
+        {/* {order.eta
+          ? new Date(order.eta).toLocaleTimeString()
+          : 'Calculating...'}
+      </p> */}
 
       <DeliveryMap
         orderId={orderId}
