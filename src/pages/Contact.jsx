@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import OrderTracking from '../components/withoutStories/newWS/OrderTracking';
 
 const Contact = () => {
+  const orderId = 1
   return (
     <div>
       <h2 className="text-2xl font-bold">Contact Us</h2>
@@ -26,8 +27,7 @@ const Contact = () => {
         </button>
       </form>
 
-      <OrderTracking orderId={1} />
-
+      <OrderTracking orderId={orderId} />
     </div>
   );
 };
