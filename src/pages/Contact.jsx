@@ -27,7 +27,7 @@ const Contact = () => {
         </button>
       </form>
 
-      <OrderTracking orderId={orderId} />
+      {/* <OrderTracking orderId={orderId} /> */}
     </div>
   );
 };
